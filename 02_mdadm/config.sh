@@ -6,12 +6,14 @@ for i in `seq 1 5`; do
     echo n # Add a new partition
     echo p # Primary partition
     echo $i # Partition number
-    echo   # First sector (Accept default: 1)
-    echo   +100M # Last sector (Accept default: varies)
+    echo  # First sector (Accept default: 1)
+    echo '+100M' # Last sector (Accept default: varies)
+    echo
     echo w # Write changes
+    echo Y
     ) | gdisk /dev/md0
+    mkfs.ext4 "/dev/md0p$i"
 done
-mkfs.ext4 /dev/md0
 mdadm --verbose --detail --scan > /etc/mdadm.conf
 
 mdadm /dev/md0 -f /dev/sde
