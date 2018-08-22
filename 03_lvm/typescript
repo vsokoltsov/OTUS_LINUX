@@ -1,0 +1,871 @@
+Script started on Wed Aug 22 20:44:03 2018
+]0;root@otuslinux:~[?1034h[root@otuslinux ~]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+|-sda1                    8:1    0    1M  0 part 
+|-sda2                    8:2    0    1G  0 part /boot
+`-sda3                    8:3    0   39G  0 part 
+  |-VolGroup00-LogVol00 253:0    0    8G  0 lvm  /
+  `-VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+sdb                       8:16   0    8G  0 disk 
+sdc                       8:32   0    1G  0 disk 
+sdd                       8:48   0    1G  0 disk 
+]0;root@otuslinux:~[root@otuslinux ~]# lsblk[1Pexitlvcreate -L 2G -n var  VolGroup00[1@home  VolGroup00[root@otuslinux ~]# lsblk[Kvremove /dev/mapper/VolGroup00-lvol0 [root@otuslinux ~]# lsblk[Kvcreate -L 2G -n home  VolGroup00
+  Logical volume "home" created.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G -n home  VolGroup00[1P[1P[1P[1P[1@v[1@a[1@r
+  Logical volume "var" created.
+]0;root@otuslinux:~[root@otuslinux ~]# lvconvert -m1 datavg/testlv             VolGr     VolGroup00/var
+Are you sure you want to convert linear LV VolGroup00/var to raid1 with 2 images enhancing resilience? [y/n]: y
+  Insufficient suitable allocatable extents for logical volume : 65 more required
+]0;root@otuslinux:~[root@otuslinux ~]# lvconvert -m1 VolGroup00/var[root@otuslinux ~]# [Kmkfs.xfs /dev/mapper/VolGroup-var
+/dev/mapper/VolGroup-var: No such file or directory
+Usage: mkfs.xfs
+/* blocksize */		[-b log=n|size=num]
+/* metadata */		[-m crc=0|1,finobt=0|1,uuid=xxx]
+/* data subvol */	[-d agcount=n,agsize=n,file,name=xxx,size=num,
+			    (sunit=value,swidth=value|su=num,sw=num|noalign),
+			    sectlog=n|sectsize=num
+/* force overwrite */	[-f]
+/* inode size */	[-i log=n|perblock=n|size=num,maxpct=n,attr=0|1|2,
+			    projid32bit=0|1]
+/* no discard */	[-K]
+/* log subvol */	[-l agnum=n,internal,size=num,logdev=xxx,version=n
+			    sunit=value|su=num,sectlog=n|sectsize=num,
+			    lazy-count=0|1]
+/* label */		[-L label (maximum 12 characters)]
+/* naming */		[-n log=n|size=num,version=2|ci,ftype=0|1]
+/* no-op info only */	[-N]
+/* prototype file */	[-p fname]
+/* quiet */		[-q]
+/* realtime subvol */	[-r extsize=num,size=num,rtdev=xxx]
+/* sectorsize */	[-s log=n|size=num]
+/* version */		[-V]
+			devicename
+<devicename> is required unless -d name=xxx is given.
+<num> is xxx (bytes), xxxs (sectors), xxxb (fs blocks), xxxk (xxx KiB),
+      xxxm (xxx MiB), xxxg (xxx GiB), xxxt (xxx TiB) or xxxp (xxx PiB).
+<value> is xxx (512 byte blocks).
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs.xfs /dev/mapper/VolGroup-varp[1@0[1@0
+meta-data=/dev/mapper/VolGroup00-var isize=512    agcount=4, agsize=131072 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=524288, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs.xfs /dev/mapper/VolGroup00-var[2P-var[root@otuslinux ~]# [5Plvconvert -m1 VolGroup00/var
+Are you sure you want to convert linear LV VolGroup00/var to raid1 with 2 images enhancing resilience? [y/n]: y
+  Insufficient suitable allocatable extents for logical volume : 65 more required
+]0;root@otuslinux:~[root@otuslinux ~]# lvconvert -m1 VolGroup00/var[root@otuslinux ~]# [7@mkfs.xfs /dev/mapper/VolGroup00-var   home
+meta-data=/dev/mapper/VolGroup00-home isize=512    agcount=4, agsize=131072 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=524288, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs.xfs /dev/mapper/VolGroup00-home[root@otuslinux ~]# [8Plvconvert -m1 VolGroup00/var[root@otuslinux ~]# [7@mkfs.xfs /dev/mapper/VolGroup00-var[2P-var[root@otuslinux ~]# [5Plvconvert -m1 VolGroup00/var[root@otuslinux ~]# lvcreate -L 2G -n var  VolGroup00[1@home  VolGroup00[root@otuslinux ~]# lsblk[K[1Pexitlvcreate -L 2G -n var  VolGroup00[1@home  VolGroup00[root@otuslinux ~]# lsblk[Kvremove /dev/mapper/VolGroup00-lvol0       var
+Do you really want to remove active logical volume VolGroup00/var? [y/n]: y
+  Logical volume "var" successfully removed
+]0;root@otuslinux:~[root@otuslinux ~]# lvremove /dev/mapper/VolGroup00-var[root@otuslinux ~]# mkfs.xfs /dev/mapper/VolGroup00-home[root@otuslinux ~]# [8Plvconvert -m1 VolGroup00/var[root@otuslinux ~]# [7@mkfs.xfs /dev/mapper/VolGroup00-var[2P-var[root@otuslinux ~]# [5Plvconvert -m1 VolGroup00/var[root@otuslinux ~]# lvcreate -L 2G -n var  VolGroup00[1@home  VolGroup00[1Pvar  VolGroup00[1@-[1@m[1P[1P-[1@-[1@m[1@ [1@1[1@ 
+  Insufficient suitable allocatable extents for logical volume var: 130 more required
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G -m 1 -n var  VolGroup00-[1@--[1@-[1@a[1@l[1@l[1@o[1@c[1@ [1@n[1@o[1@r[1@m[1@a[1@l[1@ 
+  Insufficient suitable allocatable extents for logical volume var: 130 more required
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G --alloc normal -m 1 -n var  VolGroup00l[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1@-[1@-[1@a[1@l[1@l[1@o[1@c [1@ [1@a[1@n[1@y[1@w[1@h[1@e[1@r[1@e
+  Logical volume "var" created.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G --alloc anywhere -m 1 -n var  VolGroup00[2Pnormal -m 1 -n var  VolGroup00[15Pm 1 -n var  VolGroup00[root@otuslinux ~]# lv[3Premove /dev/mapper/VolGroup00-var   home
+Do you really want to remove active logical volume VolGroup00/home? [y/n]: y
+  Logical volume "home" successfully removed
+]0;root@otuslinux:~[root@otuslinux ~]# lvremove /dev/mapper/VolGroup00-home[root@otuslinux ~]# lvcreate -L 2G --alloc anywhere -m 1 -n var  VolGroup001 -n var  [1P[1P[1P[1@h[1@o[1@m[1@e[1P[1P[1P[1P[1@-[1@se [1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P
+  The origin name should include the volume group.
+  Run `lvcreate --help' for more information.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G -s -n home  VolGroup00[1PVolGroup00 [1@/[1@d[1@e[1@v[1@/[1@m[1@a[1@p[1@p[1@e[1@r[1@/
+  "/dev/mapper/VolGroup00": Invalid path for Logical Volume.
+  Run `lvcreate --help' for more information.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G -s -n home /dev/mapper/VolGroup00  /data
+  Snapshot origin LV data not found in Volume group VolGroup00.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G -s -n home /dev/mapper/VolGroup00/data [K[12P VolGroup00[root@otuslinux ~]# lv[1Premove /dev/mapper/VolGroup00-home[root@otuslinux ~]# lvcreate -L 2G -s -n home  VolGroup00[1@l[1P2G -s -n home  VolGroup00                                     lvs
+  LV       VG         Attr       LSize Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00 VolGroup00 -wi-ao---- 8.00g                                                    
+  LogVol01 VolGroup00 -wi-ao---- 1.50g                                                    
+  var      VolGroup00 rwa-a-r--- 2.00g                                    100.00          
+]0;root@otuslinux:~[root@otuslinux ~]# lvscreate -L 2G -s -n home /dev/mapper/VolGroup00/data[1P[1P -n home /dev/mapper/Vo[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1P[1PVolGroup00/data     
+WARNING: xfs signature detected on /dev/VolGroup00/home at offset 0. Wipe it? [y/n]: y
+  Wiping xfs signature on /dev/VolGroup00/home.
+  Logical volume "home" created.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G  -n home VolGroup00[root@otuslinux ~]# lvs[Kcreate -L 2G -s -n home /dev/mapper/VolGroup00/data [K[12P VolGroup00[root@otuslinux ~]# lv[1Premove /dev/mapper/VolGroup00-home[root@otuslinux ~]# lvcreate -L 2G --alloc anywhere -m 1 -n var  VolGroup00[root@otuslinux ~]# lv[19Premove /dev/mapper/VolGroup00-home[root@otuslinux ~]# lvcreate -L 2G -s -n home  VolGroup00/dev/mapper/VolGroup00 /data[root@otuslinux ~]# lvs[Kcreate -L 2G  -n home VolGroup00[root@otuslinux ~]# [Klvs
+  LV       VG         Attr       LSize Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00 VolGroup00 -wi-ao---- 8.00g                                                    
+  LogVol01 VolGroup00 -wi-ao---- 1.50g                                                    
+  home     VolGroup00 -wi-a----- 2.00g                                                    
+  var      VolGroup00 rwa-a-r--- 2.00g                                    100.00          
+]0;root@otuslinux:~[root@otuslinux ~]# lvscreate -L 2G  -n home VolGroup00[root@otuslinux ~]# lvs[Kcreate -L 2G -s -n home /dev/mapper/VolGroup00/data[root@otuslinux ~]# lvs[Kcreate -L 2G -s -n home /dev/mapper/VolGroup00/data[root@otuslinux ~]# lvs[Kcreate -L 2G  -n home VolGroup00[root@otuslinux ~]# lvs[Kcreate -L 2G  -n home VolGroup00[root@otuslinux ~]# lvs[K[Klvscreate -L 2G  -n home VolGroup00[root@otuslinux ~]# lvs[Kcreate -L 2G -s -n home /dev/mapper/VolGroup00/data[1P[1P[1P[1P[1@s[1@n[1@a[1@p /dev/mapper/VolGroup00/data                /VolGroup00-home
+  Logical volume "snap" created.
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs  .xfs /dev/mapper/
+VolGroup00-LogVol00      VolGroup00-home          VolGroup00-snap          VolGroup00-var           VolGroup00-var_rimage_1  VolGroup00-var_rmeta_1   
+VolGroup00-LogVol01      VolGroup00-home-real     VolGroup00-snap-cow      VolGroup00-var_rimage_0  VolGroup00-var_rmeta_0   control                  
+[root@otuslinux ~]# mkfs.xfs /dev/mapper/Vol0 -Group      Group00-var
+meta-data=/dev/mapper/VolGroup00-var isize=512    agcount=4, agsize=131072 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=524288, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs.xfs /dev/mapper/VolGroup00-var  [root@otuslinux ~]# [Kmount /dev/mapper/VolGroup-home /home
+mount: special device /dev/mapper/VolGroup-home does not exist
+]0;root@otuslinux:~[root@otuslinux ~]# lsblk
+NAME                        MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                           8:0    0   40G  0 disk 
+|-sda1                        8:1    0    1M  0 part 
+|-sda2                        8:2    0    1G  0 part /boot
+`-sda3                        8:3    0   39G  0 part 
+  |-VolGroup00-LogVol00     253:0    0    8G  0 lvm  /
+  |-VolGroup00-LogVol01     253:1    0  1.5G  0 lvm  [SWAP]
+  |-VolGroup00-var_rmeta_0  253:3    0   32M  0 lvm  
+  | `-VolGroup00-var        253:7    0    2G  0 lvm  
+  |-VolGroup00-var_rimage_0 253:4    0    2G  0 lvm  
+  | `-VolGroup00-var        253:7    0    2G  0 lvm  
+  |-VolGroup00-var_rmeta_1  253:5    0   32M  0 lvm  
+  | `-VolGroup00-var        253:7    0    2G  0 lvm  
+  |-VolGroup00-var_rimage_1 253:6    0    2G  0 lvm  
+  | `-VolGroup00-var        253:7    0    2G  0 lvm  
+  |-VolGroup00-home-real    253:8    0    2G  0 lvm  
+  | |-VolGroup00-home       253:2    0    2G  0 lvm  
+  | `-VolGroup00-snap       253:10   0    2G  0 lvm  
+  `-VolGroup00-snap-cow     253:9    0    2G  0 lvm  
+    `-VolGroup00-snap       253:10   0    2G  0 lvm  
+sdb                           8:16   0    8G  0 disk 
+sdc                           8:32   0    1G  0 disk 
+sdd                           8:48   0    1G  0 disk 
+]0;root@otuslinux:~[root@otuslinux ~]# lsblkmount /dev/mapper/VolGroup-home /home[root@otuslinux ~]# m[4Pkfs.xfs /dev/mapper/VolGroup00-v[root@otuslinux ~]# lvcreate -L 2G -s -n snap /dev/mapper/VolGroup00-home[root@otuslinux ~]# lvs[Kcreate -L 2G -s -n snap /dev/mapper/VolGroup00-home[root@otuslinux ~]# [20Pmkfs.xfs /dev/mapper/VolGroup00-v[root@otuslinux ~]# mount /dev/mapper/VolGroup-home /home[root@otuslinux ~]# lsblk[K[Klvr remove VolGroup00/snn ap
+Do you really want to remove active logical volume VolGroup00/snap? [y/n]: y
+  Logical volume "snap" successfully removed
+]0;root@otuslinux:~[root@otuslinux ~]# lvremove VolGroup00/snap    home
+Do you really want to remove active logical volume VolGroup00/home? [y/n]: y
+  Logical volume "home" successfully removed
+]0;root@otuslinux:~[root@otuslinux ~]# lvremove VolGroup00/home    var
+Do you really want to remove active logical volume VolGroup00/var? [y/n]: y
+  Logical volume "var" successfully removed
+]0;root@otuslinux:~[root@otuslinux ~]# ksb   lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+|-sda1                    8:1    0    1M  0 part 
+|-sda2                    8:2    0    1G  0 part /boot
+`-sda3                    8:3    0   39G  0 part 
+  |-VolGroup00-LogVol00 253:0    0    8G  0 lvm  /
+  `-VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+sdb                       8:16   0    8G  0 disk 
+sdc                       8:32   0    1G  0 disk 
+sdd                       8:48   0    1G  0 disk 
+]0;root@otuslinux:~[root@otuslinux ~]# gdisk /dev/sdda  a3
+bash: gdisk: command not found
+]0;root@otuslinux:~[root@otuslinux ~]# gdisk /dev/sda3g[1P[1@f
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0x2ef83cac.
+
+Command (m for help): m
+Command action
+   a   toggle a bootable flag
+   b   edit bsd disklabel
+   c   toggle the dos compatibility flag
+   d   delete a partition
+   g   create a new empty GPT partition table
+   G   create an IRIX (SGI) partition table
+   l   list known partition types
+   m   print this menu
+   n   add a new partition
+   o   create a new empty DOS partition table
+   p   print the partition table
+   q   quit without saving changes
+   s   create a new empty Sun disklabel
+   t   change a partition's system id
+   u   change display/entry units
+   v   verify the partition table
+   w   write table to disk and exit
+   x   extra functionality (experts only)
+
+Command (m for help): n
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 1): 1
+First sector (2048-81784831, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-81784831, default 81784831): +2G
+Partition 1 of type Linux and of size 2 GiB is set
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+
+WARNING: Re-reading the partition table failed with error 22: Invalid argument.
+The kernel still uses the old table. The new table will be used at
+the next reboot or after you run partprobe(8) or kpartx(8)
+Syncing disks.
+]0;root@otuslinux:~[root@otuslinux ~]# partprobe
+]0;root@otuslinux:~[root@otuslinux ~]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+|-sda1                    8:1    0    1M  0 part 
+|-sda2                    8:2    0    1G  0 part /boot
+`-sda3                    8:3    0   39G  0 part 
+  |-VolGroup00-LogVol00 253:0    0    8G  0 lvm  /
+  `-VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+sdb                       8:16   0    8G  0 disk 
+sdc                       8:32   0    1G  0 disk 
+sdd                       8:48   0    1G  0 disk 
+]0;root@otuslinux:~[root@otuslinux ~]# lsblkpartprobefdisk /dev/sda3gdisk /dev/sda3fdisk /dev/sda3 
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): n
+Partition type:
+   p   primary (3 primary, 0 extended, 1 free)
+   e   extended
+Select (default e): p
+Selected partition 4
+No free sectors available
+
+Command (m for help): c q
+
+]0;root@otuslinux:~[root@otuslinux ~]# fdisk /dev/sda b
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0x4cf953ab.
+
+Command (m for help): p q
+
+]0;root@otuslinux:~[root@otuslinux ~]# fdisk /dev/sdb a3
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): ^[[A    q
+
+]0;root@otuslinux:~[root@otuslinux ~]# fdisk /dev/sda3         -l
+
+Disk /dev/sda: 42.9 GB, 42949672960 bytes, 83886080 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk label type: dos
+Disk identifier: 0x000b47f7
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1            2048        4095        1024   83  Linux
+/dev/sda2   *        4096     2101247     1048576   83  Linux
+/dev/sda3         2101248    83886079    40892416   8e  Linux LVM
+
+Disk /dev/sdb: 8589 MB, 8589934592 bytes, 16777216 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdc: 1073 MB, 1073741824 bytes, 2097152 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdd: 1073 MB, 1073741824 bytes, 2097152 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/VolGroup00-LogVol00: 8589 MB, 8589934592 bytes, 16777216 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/VolGroup00-LogVol01: 1610 MB, 1610612736 bytes, 3145728 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+]0;root@otuslinux:~[root@otuslinux ~]# fdisk -l/dev/sda3[1Pba[9Plsblkfdisk /dev/sdaba3-l[K[Kmkfs.xfs /dev/sdb
+mkfs.xfs: /dev/sdb appears to contain an existing filesystem (xfs).
+mkfs.xfs: Use the -f option to force overwrite.
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs.xfs /dev/sdbs /dev/sdbdev/sdb                 fdisk -l/dev/sda3[1Pba[9Plsblkpartprobe[4Plsblkfdisk /dev/sdab
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+Device does not contain a recognized partition table
+Building a new DOS disklabel with disk identifier 0xfedc8572.
+
+Command (m for help): n
+Partition type:
+   p   primary (0 primary, 0 extended, 4 free)
+   e   extended
+Select (default p): p
+Partition number (1-4, default 1): 
+First sector (2048-16777215, default 2048): 
+Using default value 2048
+Last sector, +sectors or +size{K,M,G} (2048-16777215, default 16777215): +2G
+Partition 1 of type Linux and of size 2 GiB is set
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+]0;root@otuslinux:~[root@otuslinux ~]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+|-sda1                    8:1    0    1M  0 part 
+|-sda2                    8:2    0    1G  0 part /boot
+`-sda3                    8:3    0   39G  0 part 
+  |-VolGroup00-LogVol00 253:0    0    8G  0 lvm  /
+  `-VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+sdb                       8:16   0    8G  0 disk 
+`-sdb1                    8:17   0    2G  0 part 
+sdc                       8:32   0    1G  0 disk 
+sdd                       8:48   0    1G  0 disk 
+]0;root@otuslinux:~[root@otuslinux ~]# lsblkfdisk /dev/sdb
+Welcome to fdisk (util-linux 2.23.2).
+
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+
+Command (m for help): n
+Partition type:
+   p   primary (1 primary, 0 extended, 3 free)
+   e   extended
+Select (default p): p
+Partition number (2-4, default 2): 
+First sector (4196352-16777215, default 4196352): 
+Using default value 4196352
+Last sector, +sectors or +size{K,M,G} (4196352-16777215, default 16777215): +2G
+Partition 2 of type Linux and of size 2 GiB is set
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+]0;root@otuslinux:~[root@otuslinux ~]# pvcreate /dev/sdb1
+  Physical volume "/dev/sdb1" successfully created.
+]0;root@otuslinux:~[root@otuslinux ~]# pvcreate /dev/sdb1 2
+  Physical volume "/dev/sdb2" successfully created.
+]0;root@otuslinux:~[root@otuslinux ~]# vb gcreate home_vol /dev/sdb b1
+  Volume group "home_vol" successfully created
+]0;root@otuslinux:~[root@otuslinux ~]# vgcreate home_vol /dev/sdb1[1P[1P[1P[1P[1@v[1@a[1@r_vol /dev/sdb1 2
+  Volume group "var_vol" successfully created
+]0;root@otuslinux:~[root@otuslinux ~]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree  
+  VolGroup00   1   2   0 wz--n- <38.97g <29.47g
+  home_vol     1   0   0 wz--n-  <2.00g  <2.00g
+  var_vol      1   0   0 wz--n-  <2.00g  <2.00g
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -l L 2G -n home home_vol
+  Volume group "home_vol" has insufficient free space (511 extents): 512 required.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 2G -n home home_volG[1P[1P[1@1[1@.[1@5[1@G
+  Logical volume "home" created.
+]0;root@otuslinux:~[root@otuslinux ~]# lvcreate -L 1.5G -n home home_vol[1P[1P[1P[1P[1@v[1@a[1@r home_v[1P[1P[1P[1P[1@v[1@a[1@r
+  Logical volume "var" created.
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs  .xs fs /dev/mapper/
+VolGroup00-LogVol00  VolGroup00-LogVol01  control              home_vol-home        var_vol-var          
+[root@otuslinux ~]# mkfs.xfs /dev/mapper/home_vole-home[1P
+meta-data=/dev/mapper/home_vol-home isize=512    agcount=4, agsize=98304 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=393216, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+]0;root@otuslinux:~[root@otuslinux ~]# mkfs.xfs /dev/mapper/home_vol-home[1P[1P[1P[1P[1@v[1@a[1@r_vol-home    var
+meta-data=/dev/mapper/var_vol-var isize=512    agcount=4, agsize=98304 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=0, sparse=0
+data     =                       bsize=4096   blocks=393216, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0 ftype=1
+log      =internal log           bsize=4096   blocks=2560, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+]0;root@otuslinux:~[root@otuslinux ~]# mount /home      dev/mapper/home_vol-v home /home
+]0;root@otuslinux:~[root@otuslinux ~]# cd /home
+]0;root@otuslinux:/home[root@otuslinux home]# ll
+total 0
+]0;root@otuslinux:/home[root@otuslinux home]# cd ../
+]0;root@otuslinux:/[root@otuslinux /]# mount /dev/mapper/var_vol-var /var
+]0;root@otuslinux:/[root@otuslinux /]# lsblk
+NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
+sda                       8:0    0   40G  0 disk 
+|-sda1                    8:1    0    1M  0 part 
+|-sda2                    8:2    0    1G  0 part /boot
+`-sda3                    8:3    0   39G  0 part 
+  |-VolGroup00-LogVol00 253:0    0    8G  0 lvm  /
+  `-VolGroup00-LogVol01 253:1    0  1.5G  0 lvm  [SWAP]
+sdb                       8:16   0    8G  0 disk 
+|-sdb1                    8:17   0    2G  0 part 
+| `-home_vol-home       253:2    0  1.5G  0 lvm  /home
+`-sdb2                    8:18   0    2G  0 part 
+  `-var_vol-var         253:3    0  1.5G  0 lvm  /var
+sdc                       8:32   0    1G  0 disk 
+sdd                       8:48   0    1G  0 disk 
+]0;root@otuslinux:/[root@otuslinux /]# blkid
+/dev/sda2: UUID="570897ca-e759-4c81-90cf-389da6eee4cc" TYPE="xfs" 
+/dev/sda3: PTTYPE="dos" 
+/dev/sdb1: UUID="Zw93uM-7n4k-Ug9B-3CKT-CBI6-eMf8-7fiI9Q" TYPE="LVM2_member" 
+/dev/sdb2: UUID="eGAKte-TSQM-lto7-7TVb-n3vI-UD29-bjaI0f" TYPE="LVM2_member" 
+/dev/mapper/VolGroup00-LogVol00: UUID="644274e7-09ea-4cc8-881b-b8a8fbbb2811" TYPE="xfs" 
+/dev/mapper/VolGroup00-LogVol01: UUID="c39c5bed-f37c-4263-bee8-aeb6a6659d7b" TYPE="swap" 
+/dev/mapper/home_vol-home: UUID="de5adaf9-6e80-440c-8fbd-8a3dfc557bec" TYPE="xfs" 
+/dev/mapper/var_vol-var: UUID="79eb8507-aef9-4972-b2d0-2ae9a3bd531a" TYPE="xfs" 
+]0;root@otuslinux:/[root@otuslinux /]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/VolGroup00-LogVol00 /                       xfs     defaults        0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc /boot                   xfs     defaults        0 0
+/dev/mapper/VolGroup00-LogVol01 swap                    swap    defaults        0 0
+]0;root@otuslinux:/[root@otuslinux /]# sudo    vim /etc/fstab
+bash: vim: command not found
+]0;root@otuslinux:/[root@otuslinux /]# vim /etc/fstab[1P
+[?1049h[?1h=[1;52r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[52;1H"/etc/fstab" 11L, 481C[2;1H#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/VolGroup00-LogVol00 /[23Cxfs     defaults[8C0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc /boot[19Cxfs     defaults[8C0 0
+/dev/mapper/VolGroup00-LogVol01 swap[20Cswap    defaults[8C0 0
+[94m~                                                                                                                                                                                                           [13;1H~                                                                                                                                                                                                           [14;1H~                                                                                                                                                                                                           [15;1H~                                                                                                                                                                                                           [16;1H~                                                                                                                                                                                                           [17;1H~                                                                                                                                                                                                           [18;1H~                                                                                                                                                                                                           [19;1H~                                                                                                                                                                                                           [20;1H~                                                                                                                                                                                                           [21;1H~                                                                                                                                                                                                           [22;1H~                                                                                                                                                                                                           [23;1H~                                                                                                                                                                                                           [24;1H~                                                                                                                                                                                                           [25;1H~                                                                                                                                                                                                           [26;1H~                                                                                                                                                                                                           [27;1H~                                                                                                                                                                                                           [28;1H~                                                                                                                                                                                                           [29;1H~                                                                                                                                                                                                           [30;1H~                                                                                                                                                                                                           [31;1H~                                                                                                                                                                                                           [32;1H~                                                                                                                                                                                                           [33;1H~                                                                                                                                                                                                           [34;1H~                                                                                                                                                                                                           [35;1H~                                                                                                                                                                                                           [36;1H~                                                                                                                                                                                                           [37;1H~                                                                                                                                                                                                           [38;1H~                                                                                                                                                                                                           [39;1H~                                                                                                                                                                                                           [40;1H~                                                                                                                                                                                                           [41;1H~                                                                                                                                                                                                           [42;1H~                                                                                                                                                                                                           [43;1H~                                                                                                                                                                                                           [44;1H~                                                                                                                                                                                                           [45;1H~                                                                                                                                                                                                           [46;1H~                                                                                                                                                                                                           [47;1H~                                                                                                                                                                                                           [48;1H~                                                                                                                                                                                                           [49;1H~                                                                                                                                                                                                           [50;1H~                                                                                                                                                                                                           [51;1H~                                                                                                                                                                                                           [1;1H[?12l[?25h
+
+
+
+
+
+
+
+
+
+[?25l[m[52;1H[1m-- INSERT --[m[52;14H[K[11;1H[?12l[?25h[83C[?25l[12;1H[K[12;1H[?12l[?25h[?25lUUID="de5adaf9-6e80-440c-8fbd-8a3dfc557bec"[?12l[?25hUUID="de5adaf9-6e80-440c-8fbd-8a3dfc557bec"[?25l:[?12l[?25h[?25lq[?12l[?25h[?25l[12;45H[K[12;45H[?12l[?25h[?25l[12;44H[K[12;44H[?12l[?25h[?25lÐ[34m~V[?12l[?25h[m[52;1H[K[12;46H[?25l[?12l[?25h[?25l[52;1H:[?12l[?25hq![?25l[52;1H[K[52;1H[?1l>[?12l[?25h[?1049l]0;root@otuslinux:/[root@otuslinux /]# vi /etc/fstab
+[?1049h[?1h=[1;52r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[52;1H"/etc/fstab" 11L, 481C[2;1H#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/VolGroup00-LogVol00 /[23Cxfs     defaults[8C0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc /boot[19Cxfs     defaults[8C0 0
+/dev/mapper/VolGroup00-LogVol01 swap[20Cswap    defaults[8C0 0
+[94m~                                                                                                                                                                                                           [13;1H~                                                                                                                                                                                                           [14;1H~                                                                                                                                                                                                           [15;1H~                                                                                                                                                                                                           [16;1H~                                                                                                                                                                                                           [17;1H~                                                                                                                                                                                                           [18;1H~                                                                                                                                                                                                           [19;1H~                                                                                                                                                                                                           [20;1H~                                                                                                                                                                                                           [21;1H~                                                                                                                                                                                                           [22;1H~                                                                                                                                                                                                           [23;1H~                                                                                                                                                                                                           [24;1H~                                                                                                                                                                                                           [25;1H~                                                                                                                                                                                                           [26;1H~                                                                                                                                                                                                           [27;1H~                                                                                                                                                                                                           [28;1H~                                                                                                                                                                                                           [29;1H~                                                                                                                                                                                                           [30;1H~                                                                                                                                                                                                           [31;1H~                                                                                                                                                                                                           [32;1H~                                                                                                                                                                                                           [33;1H~                                                                                                                                                                                                           [34;1H~                                                                                                                                                                                                           [35;1H~                                                                                                                                                                                                           [36;1H~                                                                                                                                                                                                           [37;1H~                                                                                                                                                                                                           [38;1H~                                                                                                                                                                                                           [39;1H~                                                                                                                                                                                                           [40;1H~                                                                                                                                                                                                           [41;1H~                                                                                                                                                                                                           [42;1H~                                                                                                                                                                                                           [43;1H~                                                                                                                                                                                                           [44;1H~                                                                                                                                                                                                           [45;1H~                                                                                                                                                                                                           [46;1H~                                                                                                                                                                                                           [47;1H~                                                                                                                                                                                                           [48;1H~                                                                                                                                                                                                           [49;1H~                                                                                                                                                                                                           [50;1H~                                                                                                                                                                                                           [51;1H~                                                                                                                                                                                                           [1;1H[?12l[?25h
+
+
+
+
+
+
+
+
+
+[82C[?25l[m[52;1H[1m-- INSERT --[m[52;14H[K[12;1H[K[12;1H[?12l[?25h[?25lUUID="de5adaf9-6e80-440c-8fbd-8a3dfc557bec"[?12l[?25h[?25l [?12l[?25h[?25l/[?12l[?25h[?25lh[?12l[?25h[?25lo[?12l[?25h[?25lm[?12l[?25h[?25le[?12l[?25h[?25l [?12l[?25h[?25lx[?12l[?25h[?25lf[?12l[?25h[?25ls[?12l[?25h[?25l [?12l[?25h[?25ld[?12l[?25h[?25le[?12l[?25h[?25lf[?12l[?25h[?25la[?12l[?25h[?25lu[?12l[?25h[?25ll[?12l[?25h[?25lt[?12l[?25h[?25ls[?12l[?25h[?25l [?12l[?25h[?25l0[?12l[?25h[?25l0[?12l[?25h[52;1H[K[12;65H[?25l[?12l[?25h[?25l[52;1H[1m-- INSERT --[12;65H[?12l[?25h[?25l[m 0[?12l[?25h[52;1H[K[12;52H[?25l[?12l[?25h[?25l[52;1H:[?12l[?25hwq![?25l"/etc/fstab" 12L, 548C written
+[?1l>[?12l[?25h[?1049l]0;root@otuslinux:/[root@otuslinux /]# vi /etc/fstab
+[?1049h[?1h=[1;52r[?12;25h[?12l[?25h[27m[m[H[2J[?25l[52;1H"/etc/fstab" 12L, 548C[2;1H#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/VolGroup00-LogVol00 /[23Cxfs     defaults[8C0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc /boot[19Cxfs     defaults[8C0 0
+/dev/mapper/VolGroup00-LogVol01 swap[20Cswap    defaults[8C0 0
+UUID="de5adaf9-6e80-440c-8fbd-8a3dfc557bec" /home xfs defaults 0 0
+[94m~                                                                                                                                                                                                           [14;1H~                                                                                                                                                                                                           [15;1H~                                                                                                                                                                                                           [16;1H~                                                                                                                                                                                                           [17;1H~                                                                                                                                                                                                           [18;1H~                                                                                                                                                                                                           [19;1H~                                                                                                                                                                                                           [20;1H~                                                                                                                                                                                                           [21;1H~                                                                                                                                                                                                           [22;1H~                                                                                                                                                                                                           [23;1H~                                                                                                                                                                                                           [24;1H~                                                                                                                                                                                                           [25;1H~                                                                                                                                                                                                           [26;1H~                                                                                                                                                                                                           [27;1H~                                                                                                                                                                                                           [28;1H~                                                                                                                                                                                                           [29;1H~                                                                                                                                                                                                           [30;1H~                                                                                                                                                                                                           [31;1H~                                                                                                                                                                                                           [32;1H~                                                                                                                                                                                                           [33;1H~                                                                                                                                                                                                           [34;1H~                                                                                                                                                                                                           [35;1H~                                                                                                                                                                                                           [36;1H~                                                                                                                                                                                                           [37;1H~                                                                                                                                                                                                           [38;1H~                                                                                                                                                                                                           [39;1H~                                                                                                                                                                                                           [40;1H~                                                                                                                                                                                                           [41;1H~                                                                                                                                                                                                           [42;1H~                                                                                                                                                                                                           [43;1H~                                                                                                                                                                                                           [44;1H~                                                                                                                                                                                                           [45;1H~                                                                                                                                                                                                           [46;1H~                                                                                                                                                                                                           [47;1H~                                                                                                                                                                                                           [48;1H~                                                                                                                                                                                                           [49;1H~                                                                                                                                                                                                           [50;1H~                                                                                                                                                                                                           [51;1H~                                                                                                                                                                                                           [1;1H[?12l[?25h
+
+
+
+
+
+
+
+
+
+
+[65C[?25l[m[52;1H[1m-- INSERT --[m[52;14H[K[12;66H[?12l[?25h0[?25l[13;1H[K[13;1H[?12l[?25h[?25lUUID="79eb8507-aef9-4972-b2d0-2ae9a3bd531a"[?12l[?25h[?25l [?12l[?25h[?25l/[?12l[?25h[?25lv[?12l[?25h[?25la[?12l[?25h[?25lr[?12l[?25h[?25l/[?12l[?25h[?25l [?12l[?25h[?25lx[?12l[?25h[?25lf[?12l[?25h[?25ls[?12l[?25h[?25l [?12l[?25h[?25ld[?12l[?25h[?25le[?12l[?25h[?25lf[?12l[?25h[?25la[?12l[?25h[?25lu[?12l[?25h[?25ll[?12l[?25h[?25lt[?12l[?25h[?25ls[?12l[?25h[?25l [?12l[?25h[?25l0[?12l[?25h[?25l [?12l[?25h[?25l0[?12l[?25h[52;1H[K[13;66H[?25l[?12l[?25h[?25l[52;1H:[?12l[?25hwq![?25l[52;4H[K[52;4H[?12l[?25h[?25l[52;3H[K[52;3H[?12l[?25h[?25l[52;2H[K[52;2H[?12l[?25h [13;66H[?25l[52;1H[1m-- INSERT --[13;66H[?12l[?25h[?25l[m xfs defaults 0 0[13;66H[K[13;49H[?12l[?25h[52;1H[K[13;48H[?25l[?12l[?25h[?25l[52;1H:[?12l[?25hwq![?25l"/etc/fstab" 13L, 614C written
+[?1l>[?12l[?25h[?1049l]0;root@otuslinux:/[root@otuslinux /]# clear
+[3;J[H[2J]0;root@otuslinux:/[root@otuslinux /]# (reverse-i-search)`': -': mount /dev/mapper/var_vol-var /var(reverse-i-search)`-m': lvcreate -L 2G --alloc anywhere -m 1 -n var  VolGroup00(reverse-i-search)`-m[1@ ': lvcreate -L 2G --alloc anywhere (reverse-i-search)`-m [1@1': lvcreate -L 2G --alloc anywhere [6P[root@otuslinux /]# lvcreate -L 2G --alloc anywhere -m 1 -n var  VolGroup00            _mirrror var? _vol
+  Volume group "var_vol" has insufficient free space (127 extents): 512 required.
+]0;root@otuslinux:/[root@otuslinux /]# lvcreate -L 2G --alloc anywhere -m 1 -n var_mirrror var_volG[1P[1P[1@5[1@1[1@0[1@M
+  Rounding up size to full physical extent 512.00 MiB
+  Volume group "var_vol" has insufficient free space (127 extents): 128 required.
+]0;root@otuslinux:/[root@otuslinux /]# lvcreate -L 510M --alloc anywhere -m 1 -n var_mirrror var_vol10[1P[1P[1P[1@2[1@0[1@0
+  Logical volume "var_mirrror" created.
+]0;root@otuslinux:/[root@otuslinux /]# lvcreate -L 200M --alloc anywhere -m 1 -n var_mirrror var_vol[root@otuslinux /]# [K(reverse-i-search)`': -': lvcreate -L 200M --alloc anywhere -m 1 -n var_mirrror var_vol(reverse-i-search)`-[7Ps': lvcreate -L 2G -s -n snap /dev/mapper/VolGroup00-home[4P[root@otuslinux /]# lvcreate -L 2G -s -n snap /dev/mapper/VolGroup00-home               home_vol[1P[1P[1@2[1@0[1@0[1@M
+  "/dev/mapper/home_vol": Invalid path for Logical Volume.
+  Run `lvcreate --help' for more information.
+]0;root@otuslinux:/[root@otuslinux /]# lvcreate -L 200M -s -n snap /dev/mapper/home_vol                                                cat     ll /dev/mapper
+total 0
+lrwxrwxrwx. 1 root root       7 Aug 22 21:26 [0m[38;5;51mVolGroup00-LogVol00[0m -> [48;5;232;38;5;11m../dm-0[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:26 [38;5;51mVolGroup00-LogVol01[0m -> [48;5;232;38;5;11m../dm-1[0m
+crw-------. 1 root root 10, 236 Aug 21 20:44 [48;5;232;38;5;3mcontrol[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:32 [38;5;51mhome_vol-home[0m -> [48;5;232;38;5;11m../dm-2[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:32 [38;5;51mvar_vol-var[0m -> [48;5;232;38;5;11m../dm-3[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror[0m -> [48;5;232;38;5;11m../dm-8[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rimage_0[0m -> [48;5;232;38;5;11m../dm-5[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rimage_1[0m -> [48;5;232;38;5;11m../dm-7[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rmeta_0[0m -> [48;5;232;38;5;11m../dm-4[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rmeta_1[0m -> [48;5;232;38;5;11m../dm-6[0m
+]0;root@otuslinux:/[root@otuslinux /]# ll /dev/mappervcreate -L 200M -s -n snap /dev/mapper/home_vol-home
+  Logical volume "snap" created.
+]0;root@otuslinux:/[root@otuslinux /]# lvcreate -L 200M -s -n snap /dev/mapper/home_vol-home[root@otuslinux /]# ll /dev/mapper[K
+total 0
+lrwxrwxrwx. 1 root root       7 Aug 22 21:26 [0m[38;5;51mVolGroup00-LogVol00[0m -> [48;5;232;38;5;11m../dm-0[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:26 [38;5;51mVolGroup00-LogVol01[0m -> [48;5;232;38;5;11m../dm-1[0m
+crw-------. 1 root root 10, 236 Aug 21 20:44 [48;5;232;38;5;3mcontrol[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:42 [38;5;51mhome_vol-home[0m -> [48;5;232;38;5;11m../dm-2[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:42 [38;5;51mhome_vol-home-real[0m -> [48;5;232;38;5;11m../dm-9[0m
+lrwxrwxrwx. 1 root root       8 Aug 22 21:42 [38;5;51mhome_vol-snap[0m -> [48;5;232;38;5;11m../dm-11[0m
+lrwxrwxrwx. 1 root root       8 Aug 22 21:42 [38;5;51mhome_vol-snap-cow[0m -> [48;5;232;38;5;11m../dm-10[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:32 [38;5;51mvar_vol-var[0m -> [48;5;232;38;5;11m../dm-3[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror[0m -> [48;5;232;38;5;11m../dm-8[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rimage_0[0m -> [48;5;232;38;5;11m../dm-5[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rimage_1[0m -> [48;5;232;38;5;11m../dm-7[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rmeta_0[0m -> [48;5;232;38;5;11m../dm-4[0m
+lrwxrwxrwx. 1 root root       7 Aug 22 21:41 [38;5;51mvar_vol-var_mirrror_rmeta_1[0m -> [48;5;232;38;5;11m../dm-6[0m
+]0;root@otuslinux:/[root@otuslinux /]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/VolGroup00-LogVol00 /                       xfs     defaults        0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc /boot                   xfs     defaults        0 0
+/dev/mapper/VolGroup00-LogVol01 swap                    swap    defaults        0 0
+UUID="de5adaf9-6e80-440c-8fbd-8a3dfc557bec" /home xfs defaults 0 0
+UUID="79eb8507-aef9-4972-b2d0-2ae9a3bd531a" /var xfs defaults 0 0
+]0;root@otuslinux:/[root@otuslinux /]# pvdisplay
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               VolGroup00
+  PV Size               <39.00 GiB / not usable 30.00 MiB
+  Allocatable           yes 
+  PE Size               32.00 MiB
+  Total PE              1247
+  Free PE               943
+  Allocated PE          304
+  PV UUID               vrrtbx-g480-HcJI-5wLn-4aOf-Olld-rC03AY
+   
+  --- Physical volume ---
+  PV Name               /dev/sdb2
+  VG Name               var_vol
+  PV Size               2.00 GiB / not usable 4.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              511
+  Free PE               25
+  Allocated PE          486
+  PV UUID               eGAKte-TSQM-lto7-7TVb-n3vI-UD29-bjaI0f
+   
+  --- Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name               home_vol
+  PV Size               2.00 GiB / not usable 4.00 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              511
+  Free PE               77
+  Allocated PE          434
+  PV UUID               Zw93uM-7n4k-Ug9B-3CKT-CBI6-eMf8-7fiI9Q
+   
+]0;root@otuslinux:/[root@otuslinux /]# vgdisplay
+  --- Volume group ---
+  VG Name               VolGroup00
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  24
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               2
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <38.97 GiB
+  PE Size               32.00 MiB
+  Total PE              1247
+  Alloc PE / Size       304 / 9.50 GiB
+  Free  PE / Size       943 / <29.47 GiB
+  VG UUID               SA8LTU-F2yz-FEV1-RdgT-hw0Z-iRxh-yHFKuU
+   
+  --- Volume group ---
+  VG Name               var_vol
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  4
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <2.00 GiB
+  PE Size               4.00 MiB
+  Total PE              511
+  Alloc PE / Size       486 / <1.90 GiB
+  Free  PE / Size       25 / 100.00 MiB
+  VG UUID               pe9t3M-IobR-1And-E2J3-tEZ0-pwhI-nV9zC8
+   
+  --- Volume group ---
+  VG Name               home_vol
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  4
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <2.00 GiB
+  PE Size               4.00 MiB
+  Total PE              511
+  Alloc PE / Size       434 / <1.70 GiB
+  Free  PE / Size       77 / 308.00 MiB
+  VG UUID               x93bVq-qcoP-Hw2G-qNAH-nULg-mRTg-z1uIdK
+   
+]0;root@otuslinux:/[root@otuslinux /]# lvdisplay
+  --- Logical volume ---
+  LV Path                /dev/VolGroup00/LogVol01
+  LV Name                LogVol01
+  VG Name                VolGroup00
+  LV UUID                IAjIC6-ScnM-tvH6-7BTy-TN31-hd82-bgDSzd
+  LV Write Access        read/write
+  LV Creation host, time localhost.localdomain, 2018-05-12 18:50:25 +0000
+  LV Status              available
+  # open                 2
+  LV Size                1.50 GiB
+  Current LE             48
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:1
+   
+  --- Logical volume ---
+  LV Path                /dev/VolGroup00/LogVol00
+  LV Name                LogVol00
+  VG Name                VolGroup00
+  LV UUID                89CAvz-wFdh-M0su-jPHb-6VSh-YoFb-Tmr28h
+  LV Write Access        read/write
+  LV Creation host, time localhost, 2018-08-21 20:22:42 +0000
+  LV Status              available
+  # open                 1
+  LV Size                8.00 GiB
+  Current LE             256
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:0
+   
+  --- Logical volume ---
+  LV Path                /dev/var_vol/var
+  LV Name                var
+  VG Name                var_vol
+  LV UUID                mYWPhP-PaDh-jK7p-9IgD-IGhQ-vf6h-HHlfyw
+  LV Write Access        read/write
+  LV Creation host, time otuslinux, 2018-08-22 21:32:19 +0000
+  LV Status              available
+  # open                 1
+  LV Size                1.50 GiB
+  Current LE             384
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:3
+   
+  --- Logical volume ---
+  LV Path                /dev/var_vol/var_mirrror
+  LV Name                var_mirrror
+  VG Name                var_vol
+  LV UUID                3HN9dc-Wa0G-dq5j-FiDs-hxAr-EsuU-0fO70m
+  LV Write Access        read/write
+  LV Creation host, time otuslinux, 2018-08-22 21:41:38 +0000
+  LV Status              available
+  # open                 0
+  LV Size                200.00 MiB
+  Current LE             50
+  Mirrored volumes       2
+  Segments               1
+  Allocation             anywhere
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:8
+   
+  --- Logical volume ---
+  LV Path                /dev/home_vol/home
+  LV Name                home
+  VG Name                home_vol
+  LV UUID                zP8ugH-1vNM-tHvI-NoFc-NJK0-kJBu-Grus1w
+  LV Write Access        read/write
+  LV Creation host, time otuslinux, 2018-08-22 21:32:11 +0000
+  LV snapshot status     source of
+                         snap [active]
+  LV Status              available
+  # open                 1
+  LV Size                1.50 GiB
+  Current LE             384
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:2
+   
+  --- Logical volume ---
+  LV Path                /dev/home_vol/snap
+  LV Name                snap
+  VG Name                home_vol
+  LV UUID                fMiLJc-vDeW-lMYO-OCc8-IW1n-gFeU-1R50eq
+  LV Write Access        read/write
+  LV Creation host, time otuslinux, 2018-08-22 21:42:25 +0000
+  LV snapshot status     active destination for home
+  LV Status              available
+  # open                 0
+  LV Size                1.50 GiB
+  Current LE             384
+  COW-table size         200.00 MiB
+  COW-table LE           50
+  Allocated to snapshot  0.01%
+  Snapshot chunk size    4.00 KiB
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     8192
+  Block device           253:11
+   
+]0;root@otuslinux:/[root@otuslinux /]# ll
+total 20
+lrwxrwxrwx.   1 root    root       7 Aug 21 20:36 [0m[38;5;51mbin[0m -> [38;5;27musr/bin[0m
+dr-xr-xr-x.   5 root    root    4096 May 12 18:55 [38;5;27mboot[0m
+drwxr-xr-x.  20 root    root    3400 Aug 22 21:42 [38;5;27mdev[0m
+drwxr-xr-x.  78 root    root    8192 Aug 22 21:38 [38;5;27metc[0m
+drwxr-xr-x.   2 root    root       6 Aug 22 21:32 [38;5;27mhome[0m
+lrwxrwxrwx.   1 root    root       7 Aug 21 20:36 [38;5;51mlib[0m -> [38;5;27musr/lib[0m
+lrwxrwxrwx.   1 root    root       9 Aug 21 20:36 [38;5;51mlib64[0m -> [38;5;27musr/lib64[0m
+drwxr-xr-x.   2 root    root       6 Apr 11 04:59 [38;5;27mmedia[0m
+drwxr-xr-x.   2 root    root       6 Apr 11 04:59 [38;5;27mmnt[0m
+drwxr-xr-x.   3 root    root      38 Aug 21 19:39 [38;5;27mopt[0m
+dr-xr-xr-x. 213 root    root       0 Aug 21 20:44 [38;5;27mproc[0m
+dr-xr-x---.   2 root    root     176 Aug 22 20:44 [38;5;27mroot[0m
+drwxr-xr-x.  26 root    root     880 Aug 22 21:36 [38;5;27mrun[0m
+lrwxrwxrwx.   1 root    root       8 Aug 21 20:36 [38;5;51msbin[0m -> [38;5;27musr/sbin[0m
+drwxr-xr-x.   2 root    root       6 Apr 11 04:59 [38;5;27msrv[0m
+dr-xr-xr-x.  13 root    root       0 Aug 21 20:44 [38;5;27msys[0m
+drwxrwxrwt.  13 root    root    4096 Aug 22 21:32 [48;5;10;38;5;16mtmp[0m
+drwxr-xr-x.  13 root    root     155 May 12 18:50 [38;5;27musr[0m
+drwxr-xr-x.   2 vagrant vagrant   25 Aug 21 19:33 [38;5;27mvagrant[0m
+drwxr-xr-x.   2 root    root       6 Aug 22 21:32 [38;5;27mvar[0m
+]0;root@otuslinux:/[root@otuslinux /]# cd /home
+]0;root@otuslinux:/home[root@otuslinux home]# ll
+total 0
+]0;root@otuslinux:/home[root@otuslinux home]# touch file{}}      file{}1},}2},}3},}4},}5}
+]0;root@otuslinux:/home[root@otuslinux home]# ll
+total 0
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file1
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file2
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file3
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file4
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file5
+]0;root@otuslinux:/home[root@otuslinux home]# lltouch file{1,2,3,4,5}ll[K[Klltouch file{1,2,3,4,5}ll[Ktouch file{1,2,3,4,5}ll[K[Kcd ../
+]0;root@otuslinux:/[root@otuslinux /]# cd ../[4Plltouch file{1,2,3,4,5}ll[Kcd /homell[Kvdisplayvgdisplaypvdisplaycat /etc/fstabll /dev/mappervcreate -L 200M -s -n snap /dev/mapper/home_vol-home
+  Logical Volume "snap" already exists in volume group "home_vol"
+]0;root@otuslinux:/[root@otuslinux /]# ll vs
+  LV          VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00    VolGroup00 -wi-ao----   8.00g                                                    
+  LogVol01    VolGroup00 -wi-ao----   1.50g                                                    
+  home        home_vol   owi-aos---   1.50g                                                    
+  snap        home_vol   swi-a-s--- 200.00m      home   0.01                                   
+  var         var_vol    -wi-ao----   1.50g                                                    
+  var_mirrror var_vol    rwa-a-r--- 200.00m                                    100.00          
+]0;root@otuslinux:/[root@otuslinux /]# lvremove /dev/mapper/home_vol-snap
+Do you really want to remove active logical volume home_vol/snap? [y/n]: y
+  Logical volume "snap" successfully removed
+]0;root@otuslinux:/[root@otuslinux /]# ll  cd /home
+]0;root@otuslinux:/home[root@otuslinux home]# ll
+total 0
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file1
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file2
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file3
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file4
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file5
+]0;root@otuslinux:/home[root@otuslinux home]# cd ../
+]0;root@otuslinux:/[root@otuslinux /]# cd ../[4Pllcd /homelvremove /dev/mapper/home_vol-snap[root@otuslinux /]# lvs[Kcreate -L 200M -s -n snap /dev/mapper/home_vol-home
+  Logical volume "snap" created.
+]0;root@otuslinux:/[root@otuslinux /]# rm -rf /home/file{}2},}5}
+]0;root@otuslinux:/[root@otuslinux /]# ll /home
+total 0
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file1
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file3
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file4
+]0;root@otuslinux:/[root@otuslinux /]# umount /home
+]0;root@otuslinux:/[root@otuslinux /]# lvconvert --merge /dev/vg_ds00/log_snap                mapper// home_vol-snap
+  Merging of volume home_vol/snap started.
+  home_vol/home: Merged: 100.00%
+]0;root@otuslinux:/[root@otuslinux /]# ll /home
+total 0
+drwx------. 3 vagrant vagrant 113 Aug 22 20:43 [0m[38;5;27mvagrant[0m
+]0;root@otuslinux:/[root@otuslinux /]# mount /dev/mapper/home_vol-home 
+]0;root@otuslinux:/[root@otuslinux /]# ll /home
+total 0
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file1
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file2
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file3
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file4
+-rw-r--r--. 1 root root 0 Aug 22 21:45 file5
+]0;root@otuslinux:/[root@otuslinux /]# exit
+exit
+
+Script done on Wed Aug 22 21:48:40 2018
