@@ -1,0 +1,106 @@
+Script started on Sat Sep  1 13:44:24 2018
+[root@otuslinux ~]# vgs
+  VG         #PV #LV #SN Attr   VSize   VFree
+  VolGroup00   1   2   0 wz--n- <38.97g    0
+[root@otuslinux ~]# lvs VolGroup00
+  LV       VG         Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  LogVol00 VolGroup00 -wi-ao---- <37.47g
+  LogVol01 VolGroup00 -wi-ao----   1.50g
+[root@otuslinux ~]# vgrename VolGroup00 root_vg
+  Volume group "VolGroup00" successfully renamed to "root_vg"
+[root@otuslinux ~]# vgs
+  VG      #PV #LV #SN Attr   VSize   VFree
+  root_vg   1   2   0 wz--n- <38.97g    0
+[root@otuslinux ~]# vi /etc/fstab
+[root@otuslinux ~]# cat /etc/fstab
+
+#
+# /etc/fstab
+# Created by anaconda on Sat May 12 18:50:26 2018
+#
+# Accessible filesystems, by reference, are maintained under '/dev/disk'
+# See man pages fstab(5), findfs(8), mount(8) and/or blkid(8) for more info
+#
+/dev/mapper/root_vg-LogVol00 /                       xfs     defaults        0 0
+UUID=570897ca-e759-4c81-90cf-389da6eee4cc /boot                   xfs     defaults        0 0
+/dev/mapper/root_vg-LogVol01 swap                    swap    defaults        0 0
+[root@otuslinux ~]# cat /boot/grub2/grub.cfg | grep vg_os
+[root@otuslinux ~]# cat /boot/grub2/grub.cfg | grep VolGroup00
+	linux16 /vmlinuz-3.10.0-862.2.3.el7.x86_64 root=/dev/mapper/VolGroup00-LogVol00 ro no_timer_check console=tty0 console=ttyS0,115200n8 net.ifnames=0 biosdevname=0 elevator=noop crashkernel=auto rd.lvm.lv=VolGroup00/LogVol00 rd.lvm.lv=VolGroup00/LogVol01 rhgb quiet
+[root@otuslinux ~]# sed -i 's/VolGroup00/root_vg/g' /boot/grub2/grub.cfg
+[root@otuslinux ~]# cat /boot/grub2/grub.cfg | grep VolGroup00
+[root@otuslinux ~]# cat /boot/grub2/grub.cfg | grep root_vg
+	linux16 /vmlinuz-3.10.0-862.2.3.el7.x86_64 root=/dev/mapper/root_vg-LogVol00 ro no_timer_check console=tty0 console=ttyS0,115200n8 net.ifnames=0 biosdevname=0 elevator=noop crashkernel=auto rd.lvm.lv=root_vg/LogVol00 rd.lvm.lv=root_vg/LogVol01 rhgb quiet
+[root@otuslinux ~]# vgchange -ay
+  2 logical volume(s) in volume group "root_vg" now active
+[root@otuslinux ~]# ls -al /boot/initramfs-3.10.0-514.2.2.el7.x86_64.img
+ls: cannot access /boot/initramfs-3.10.0-514.2.2.el7.x86_64.img: No such file or directory
+[root@otuslinux ~]# ls -al /boot/initramfs-3.10.0-862.2.3.el7.x86_64.img
+-rw-------. 1 root root 16506787 May 12 18:55 /boot/initramfs-3.10.0-862.2.3.el7.x86_64.img
+[root@otuslinux ~]# uname -r
+3.10.0-862.2.3.el7.x86_64
+[root@otuslinux ~]# cp /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r).img.$(date +%m-%d-%H%M%S).bak
+[root@otuslinux ~]# mkinitrd -f -v /boot/initramfs-$(uname -r).img $(uname -r)
+/sbin/dracut: line 655: warning: setlocale: LC_MESSAGES: cannot change locale (ru_RU.UTF-8): No such file or directory
+/sbin/dracut: line 656: warning: setlocale: LC_CTYPE: cannot change locale (ru_RU.UTF-8): No such file or directory
+/sbin/dracut: line 656: warning: setlocale: LC_CTYPE: cannot change locale (ru_RU.UTF-8)
+Executing: /sbin/dracut -f -v /boot/initramfs-3.10.0-862.2.3.el7.x86_64.img 3.10.0-862.2.3.el7.x86_64
+dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
+dracut module 'crypt' will not be installed, because command 'cryptsetup' could not be found!
+dracut module 'dmraid' will not be installed, because command 'dmraid' could not be found!
+dracut module 'dmsquash-live-ntfs' will not be installed, because command 'ntfs-3g' could not be found!
+dracut module 'mdraid' will not be installed, because command 'mdadm' could not be found!
+dracut module 'multipath' will not be installed, because command 'multipath' could not be found!
+dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
+dracut module 'crypt' will not be installed, because command 'cryptsetup' could not be found!
+dracut module 'dmraid' will not be installed, because command 'dmraid' could not be found!
+dracut module 'dmsquash-live-ntfs' will not be installed, because command 'ntfs-3g' could not be found!
+dracut module 'mdraid' will not be installed, because command 'mdadm' could not be found!
+dracut module 'multipath' will not be installed, because command 'multipath' could not be found!
+*** Including module: bash ***
+*** Including module: nss-softokn ***
+*** Including module: i18n ***
+*** Including module: drm ***
+*** Including module: plymouth ***
+*** Including module: dm ***
+Skipping udev rule: 64-device-mapper.rules
+Skipping udev rule: 60-persistent-storage-dm.rules
+Skipping udev rule: 55-dm.rules
+*** Including module: kernel-modules ***
+Omitting driver floppy
+*** Including module: lvm ***
+Skipping udev rule: 64-device-mapper.rules
+Skipping udev rule: 56-lvm.rules
+Skipping udev rule: 60-persistent-storage-lvm.rules
+*** Including module: qemu ***
+*** Including module: resume ***
+*** Including module: rootfs-block ***
+*** Including module: terminfo ***
+*** Including module: udev-rules ***
+Skipping udev rule: 40-redhat-cpu-hotplug.rules
+Skipping udev rule: 91-permissions.rules
+*** Including module: biosdevname ***
+*** Including module: systemd ***
+*** Including module: usrmount ***
+*** Including module: base ***
+*** Including module: fs-lib ***
+*** Including module: shutdown ***
+*** Including modules done ***
+*** Installing kernel module dependencies and firmware ***
+*** Installing kernel module dependencies and firmware done ***
+*** Resolving executable dependencies ***
+*** Resolving executable dependencies done***
+*** Hardlinking files ***
+*** Hardlinking files done ***
+*** Stripping files ***
+*** Stripping files done ***
+*** Generating early-microcode cpio image contents ***
+*** No early-microcode cpio image needed ***
+*** Store current command line parameters ***
+*** Creating image file ***
+*** Creating image file done ***
+*** Creating initramfs image file '/boot/initramfs-3.10.0-862.2.3.el7.x86_64.img' done ***
+[root@otuslinux ~]# exit
+exit
+
+Script done on Sat Sep  1 13:52:03 2018
