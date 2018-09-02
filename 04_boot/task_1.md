@@ -20,7 +20,7 @@ After that, press `Ctrl+X`, and you will see a bash terminal
 
 ## init
 
-Replace `ro` with `rw init=/sysroot/bin/sh` and remove `console=ttySO` in line `linux16`
+Replace `ro` with `rw init=/sysroot/bin/sh` and remove `console=*` in line `linux16`
 
 ![Boot init](./boot_init.png)
 
