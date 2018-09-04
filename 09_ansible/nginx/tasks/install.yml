@@ -1,0 +1,21 @@
+- name: install python 2
+  raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+- name: Update all packages to the latest version
+  yum:
+    name: '*'
+    state: latest
+
+- name: 'install dependencies'
+  yum: name="{{ item }}" state=latest update_cache=yes
+  with_items:
+    - 'epel-release'
+    - 'nginx'
+
+- name: 'Enable nginx'
+  shell: systemctl enable nginx
+
+- name: 'Add 8080 port to firewall'
+  shell: |
+    firewall-cmd --zone=public --add-port=8080/tcp --permanent
+    systemctl restart firewalld

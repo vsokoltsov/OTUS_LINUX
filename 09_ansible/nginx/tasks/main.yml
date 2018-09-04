@@ -1,0 +1,16 @@
+---
+- import_tasks: install.yml
+
+- name: 'Add user to the nginx group'
+  user:
+    name: "{{ user }}"
+    groups: nginx
+    append: yes
+
+- name: 'Copy application nginx {{ nginx_conf_name }} config'
+  template:
+    src: "templates/{{ nginx_conf_name }}.j2"
+    dest: "{{ nginx_config_path }}/conf.d/{{ nginx_conf_name }}.conf"
+    force: yes
+  notify:
+    - restart nginx
