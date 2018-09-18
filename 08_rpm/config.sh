@@ -1,6 +1,7 @@
 sudo yum update -y
 sudo yum install -y epel-release
 sudo yum install -y nginx createrepo
+sudo cp -f /home/vagrant/rpm_lab/nginx.conf /etc/nginx/
 sudo systemctl start nginx
 cd /usr/share/nginx/html
 sudo rm -rf *
