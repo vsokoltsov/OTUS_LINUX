@@ -1,0 +1,7 @@
+[Unit]
+Description=Service for checking log every 30 seconds
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/sysconfig/30_seconds_log
+ExecStart=/bin/bash /tmp/timer.sh

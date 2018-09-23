@@ -1,0 +1,3 @@
+LOG_FILE=/var/log/messages
+LOG_WORD=NetworkManager
+LOG_WORD_DEFAULT_RESULT_DIR=/var/log/30_seconds_log

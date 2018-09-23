@@ -1,0 +1,8 @@
+[Unit]
+Description=unit-version of spawn-fcgi config
+After=local_fs.target
+
+[Service]
+Type=forking
+EnvironmentFile=/etc/sysconfig/spawn-fcgi
+ExecStart=/usr/bin/spawn-fcgi
