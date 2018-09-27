@@ -5,8 +5,8 @@ Documentation=man:httpd(8)
 Documentation=man:apachectl(8)
 
 [Service]
-Type=forking
-EnvironmentFile=etc/sysconfig/httpd-%i
+Type=notify
+EnvironmentFile=/etc/sysconfig/httpd-%i
 ExecStart=/usr/sbin/httpd $OPTIONS -DFOREGROUND
 ExecReload=/usr/sbin/httpd $OPTIONS -k graceful
 ExecStop=/bin/kill -WINCH ${MAINPID}
@@ -15,6 +15,7 @@ ExecStop=/bin/kill -WINCH ${MAINPID}
 # graceful stop. Normally, Systemd sends SIGTERM signal right after the
 # ExecStop, which would kill httpd. We are sending useless SIGCONT here to give
 # httpd time to finish.
+PIDFile=/run/httpd/httpd-%i.pid
 KillSignal=SIGCONT
 PrivateTmp=true
 

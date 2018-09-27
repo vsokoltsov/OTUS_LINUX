@@ -1,1 +1,0 @@
-OPTIONS="-f /etc/httpd/conf/otus.conf"
