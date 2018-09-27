@@ -13,3 +13,8 @@ sudo systemctl enable 30_seconds_log
 # Task 2
 
 sudo yum -y install epel-release
+
+# Task 3
+sudo cp otus /etc/sysconfig/httpdotus
+sudo cp httpd@.service /etc/systemd/system/
+sudo cp otus.conf /etc/httpd/conf/
