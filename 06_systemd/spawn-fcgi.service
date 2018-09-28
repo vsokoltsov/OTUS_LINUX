@@ -5,4 +5,6 @@ After=local_fs.target
 [Service]
 Type=notify
 EnvironmentFile=/etc/sysconfig/spawn-fcgi
-ExecStart=/usr/bin/spawn-fcgi $OPTIONS
+ExecStart=/bin/spawn-fcgi start $OPTIONS
+ExecStop=/bin/spawn-fcgi stop $OPTIONS
+ExecReload=/bin/spawn-fcgi reload $OPTIONS
