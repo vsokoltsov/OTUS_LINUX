@@ -12,7 +12,15 @@ sudo systemctl enable 30_seconds_log
 
 # Task 2
 
-sudo yum -y install epel-release
+sudo yum -y install epel-release automake git fcgi-devel
+cd /usr/local/src/
+sudo git clone git://github.com/gnosek/fcgiwrap.git
+sudo cd fcgiwrap
+sudo ./configure
+sudo make
+sudo make install
+sudo yum -y install spawn-fcgi
+cp spawn-fcgi /etc/sysconfig/
 
 # Task 3
 sudo cp httpd-otus /etc/sysconfig/
