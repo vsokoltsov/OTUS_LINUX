@@ -3,8 +3,9 @@ Description=unit-version of spawn-fcgi config
 After=local_fs.target
 
 [Service]
-Type=notify
+Type=simple
 EnvironmentFile=/etc/sysconfig/spawn-fcgi
-ExecStart=/bin/spawn-fcgi start $OPTIONS
-ExecStop=/bin/spawn-fcgi stop $OPTIONS
-ExecReload=/bin/spawn-fcgi reload $OPTIONS
+ExecStart=/bin/spawn-fcgi -n $OPTIONS
+
+[Install]
+WantedBy=multi-user.target
