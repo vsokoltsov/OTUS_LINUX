@@ -1,0 +1,21 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+    - name: check for updates (yum)
+      yum: list=updates update_cache=true
+
+    - name: Install base FreeIPA dependencies
+      yum: name="{{ item }}" state=latest update_cache=yes
+      with_items:
+        - ipa-server
+        - ipa-server-dns
+        - bind
+        - bind-dyndb-ldap
+
+    - name: Install IPA server in non-interactive mode
+      shell: ipa-server-install -a {{ admin_password }} --hostname=ipa.example.com -r EXAMPLE.COM -p {{ master_password }} -n example.com -U
