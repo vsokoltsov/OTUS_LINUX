@@ -31,10 +31,7 @@
 
     - name: Install IPA server in non-interactive mode
       shell: |
-        ipa-server-install --allow-zone-overlap --setup-dns \
-        --hostname ipa.example.com --domain example.com --realm EXAMPLE.COM \
-        --ds-password {{ master_password }} --admin-password {{ admin_password }} \
-        --forwarder=10.0.2.3 --reverse-zone 11.168.192.in-addr.arpa. -U
+        ipa-server-install --allow-zone-overlap --setup-dns --hostname ipa.example.com --domain example.com --realm EXAMPLE.COM --ds-password {{ master_password }} --admin-password {{ admin_password }} --forwarder=10.0.2.3 --reverse-zone 11.168.192.in-addr.arpa. -U
 
     - name: Start firewalld
       systemd:

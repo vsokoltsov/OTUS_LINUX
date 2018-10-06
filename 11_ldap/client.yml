@@ -1,0 +1,37 @@
+---
+- hosts: all
+  become: yes
+  vars_files:
+    - ./private_vars.yml
+
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+    - name: check for updates (yum)
+      yum: list=updates update_cache=true
+
+    - name: Update /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: '192.168.11.101 ipa.example.com ipa'
+
+    - name: Install IPA client
+      yum:
+        name: ipa-client
+        state: latest
+        update_cache: yes
+
+    - name: Modify existing nmcli connection
+      nmcli:
+        conn_name: 'System eth0'
+        type: ethernet
+        state: present
+        dns4:
+          - 192.168.11.101
+
+    - name: Install IPA client
+      shell: ipa-client-install --domain example.com --server ipa.example.com --realm EXAMPLE.COM --principal admin --password {{ admin_password }} --force-join -U
+
+    - name: Run autoconfig
+      shell: authconfig --enablemkhomedir --update
