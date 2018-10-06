@@ -42,9 +42,9 @@ Vagrant.configure("2") do |config|
           # end
 
           box.vm.synced_folder ".", "/home/vagrant/ipa_lab"
-          # box.vm.provision "ansible" do |ansible|
-          #   ansible.playbook = boxconfig[:playbook]
-          # end
+          box.vm.provision "ansible" do |ansible|
+            ansible.playbook = boxconfig[:playbook]
+          end
       end
   end
 end
