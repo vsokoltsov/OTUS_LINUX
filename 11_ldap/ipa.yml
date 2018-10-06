@@ -1,6 +1,8 @@
 ---
 - hosts: all
   become: yes
+  vars_files:
+    - ./private_vars.yml
 
   tasks:
     - name: install python 2
@@ -17,5 +19,54 @@
         - bind
         - bind-dyndb-ldap
 
+    - name: Copy hosts file to remote server
+      copy:
+        src: ./hosts
+        dest: /etc/hosts
+
+    - name: Copy resolve.conf file to remote server
+      copy:
+        src: ./resolve.conf
+        dest: /etc/resolve.conf
+
     - name: Install IPA server in non-interactive mode
-      shell: ipa-server-install -a {{ admin_password }} --hostname=ipa.example.com -r EXAMPLE.COM -p {{ master_password }} -n example.com -U
+      shell: |
+        ipa-server-install --allow-zone-overlap --setup-dns \
+        --hostname ipa.example.com --domain example.com --realm EXAMPLE.COM \
+        --ds-password {{ master_password }} --admin-password {{ admin_password }} \
+        --forwarder=10.0.2.3 --reverse-zone 11.168.192.in-addr.arpa. -U
+
+    - name: Start firewalld
+      systemd:
+        name: firewalld
+        state: started
+
+    - name: Add firewalld services
+      firewalld:
+        service: "{{ item }}"
+        permanent: true
+        state: enabled
+      with_items:
+        - ntp
+        - http
+        - https
+        - ldap
+        - ldaps
+        - kerberos
+        - kpasswd
+        - dns
+
+    - name: Add specific ports for firewalld
+      firewalld:
+        zone: public
+        port: "53/{{ item }}"
+        permanent: true
+        state: enabled
+      with_items:
+        - tcp
+        - udp
+
+    - name: Reload firewalld
+      service:
+        name: firewalld
+        state: restarted
