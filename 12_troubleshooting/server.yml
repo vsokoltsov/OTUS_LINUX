@@ -1,0 +1,146 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+    - name: Install epel-release package
+      yum:
+        name: epel-release
+        state: latest
+        update_cache: yes
+
+    - name: check for updates (yum)
+      yum: list=updates update_cache=true
+
+    - name: Setup necessary packages
+      yum: name="{{ item }}" state=latest update_cache=yes
+      with_items:
+        - net-tools
+        - bind-utils
+        - wget
+        - telnet
+        - mailx
+        - vim
+        - nmap
+        - traceroute
+        - w3m
+        - htop
+        - iftop
+        - policycoreutils-python
+
+    - name: Setup swappness for sysctl
+      sysctl:
+        name: vm.swappiness
+        value: 20
+        state: present
+
+    - name: Setup dirty ratio value
+      sysctl:
+        name: vm.dirty_ratio
+        value: 80
+        state: present
+
+    - name: Setup dirty background ratio value
+      sysctl:
+        name: vm.dirty_background_ratio
+        value: 5
+        state: present
+
+    - name: Increases the size of file handles
+      sysctl:
+        name: fs.file-max
+        value: 2097152
+        state: present
+
+    - name: Set inode cache & restricts core dumps
+      sysctl:
+        name: fs.suid_dumpable
+        value: 0
+        state: present
+
+    - name: Change the amount of incoming connections
+      sysctl:
+        name: net.core.somaxconn
+        value: 65535
+        state: present
+
+    - name: Change the amount of incoming connections backlog
+      sysctl:
+        name: net.core.netdev_max_backlog
+        value: 262144
+        state: present
+
+    - name: Increase the maximum amount of memory buffers
+      sysctl:
+        name: net.core.optmem_max
+        value: 25165824
+        state: present
+
+    - name: Change rmem_default value
+      sysctl:
+        name: net.core.rmem_default
+        value: 31457280
+        state: present
+
+    - name: Change rmem_max value
+      sysctl:
+        name: net.core.rmem_max
+        value: 67108864
+        state: present
+
+    - name: Change wmem_default value
+      sysctl:
+        name: net.core.wmem_default
+        value: 31457280
+        state: present
+
+    - name: Change wmen_max value
+      sysctl:
+        name: net.core.wmem_max
+        value: 67108864
+        state: present
+
+    - name: Enable TCP SYN cookie protection
+      sysctl:
+        name: net.ipv4.tcp_syncookies
+        value: 1
+        state: present
+
+    - name: Enable IP spoofing protection
+      sysctl:
+        name: net.ipv4.conf.all.rp_filter
+        value: 1
+        state: present
+
+    - name: Enable ignoring to ICMP requests
+      sysctl:
+        name: net.ipv4.icmp_echo_ignore_all
+        value: 1
+        state: present
+
+    - name: Enable ignoring to broadcasts request
+      sysctl:
+        name: net.ipv4.icmp_echo_ignore_broadcasts
+        value: 1
+        state: present
+
+    - name: Enable logging of spoofed packets, source routed packets and redirect packets
+      sysctl:
+        name: net.ipv4.conf.all.log_martians
+        value: 1
+        state: present
+
+    - name: Disable IP source routing
+      sysctl:
+        name: net.ipv4.conf.all.accept_source_route
+        value: 0
+        state: present
+    
+    - name: Disable ICMP redirect acceptance
+      sysctl:
+        name: net.ipv4.conf.all.accept_redirects
+        value: 0
+        state: present
