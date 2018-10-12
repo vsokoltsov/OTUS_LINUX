@@ -1,0 +1,167 @@
+---
+- name: install PHP 7.1
+  yum: >
+    name={{ item }}
+    enablerepo=remi-php71
+  with_items:
+    - php
+    - php-mysql
+    - php-mbstring
+    - php-bcmath
+    - php-gd
+    - php-xml
+    - php-ldap
+  notify: reload httpd
+
+- name: install jq
+  get_url: >
+    url=https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64
+    dest=/usr/local/bin/jq
+    mode=0755
+
+- name: install zabbix repository
+  yum: name=http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-release-3.4-1.el7.centos.noarch.rpm
+
+- name: install zabbix
+  yum: name={{ item }}
+  with_items:
+    - zabbix-server-mysql
+    - zabbix-agent
+    - zabbix-get
+    - dejavu-sans-fonts
+    - ipa-pgothic-fonts
+    - mod_ssl
+    - bind-utils
+
+- name: install zabbix web
+  shell: LANG=C rpm -ivh --nodeps {{ item }}
+  with_items:
+    - http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-web-mysql-3.4.1-1.el7.noarch.rpm
+    - http://repo.zabbix.com/zabbix/3.4/rhel/7/x86_64/zabbix-web-3.4.1-1.el7.noarch.rpm
+  register: result
+  changed_when: '"installing" in result.stdout'
+  failed_when: '"error" in result.stderr'
+  notify: reload httpd
+
+- name: start zabbix automatically
+  service: >
+    name={{ item }}
+    state=started
+    enabled=yes
+  with_items:
+    - zabbix-server
+    - zabbix-agent
+
+- name: start httpd automatically
+  service: >
+    name=httpd
+    state=started
+    enabled=yes
+
+- name: remove unused apache config files
+  file: >
+    path={{ item }}
+    state=absent
+  with_items:
+    - /etc/httpd/conf.d/autoindex.conf
+    - /etc/httpd/conf.d/userdir.conf
+    - /etc/httpd/conf.d/welcome.conf
+  notify: reload httpd
+
+- name: put apache config files
+  template: >
+    src={{ item }}
+    dest=/etc/httpd/conf.d/{{ item | basename | regex_replace('\.j2$','') }}
+  with_fileglob:
+    - ../templates/etc/httpd/conf.d/*.j2
+  notify: reload httpd
+
+- name: create home directory
+  file: >
+    path=/var/lib/zabbix
+    state=directory
+    owner=zabbix
+    group=zabbix
+    mode=0700
+
+- name: create mysql database
+  mysql_db: name=zabbix
+
+- name: get mysql user password
+  shell: >
+    test -f /var/lib/zabbix/.my.cnf
+    && (grep ^password /var/lib/zabbix/.my.cnf | head -1 | awk '{print $3}')
+    || (cat /dev/urandom | tr -dc '[:alnum:]' | head -c 32)
+  changed_when: False
+  register: mysql_user_pass
+
+- name: create mysql user
+  mysql_user: >
+    name=zabbix
+    password={{ mysql_user_pass.stdout }}
+    priv=zabbix.*:ALL
+
+- name: put .my.cnf
+  template: >
+    src=var/lib/zabbix/.my.cnf.j2
+    dest=/var/lib/zabbix/.my.cnf
+    mode=600
+    owner=zabbix
+    group=zabbix
+
+- name: get zabbix version
+  shell: >
+    ls -d zabbix-server-mysql-* | awk -F- '{print $4}' | sort -n
+    chdir=/usr/share/doc
+  changed_when: False
+  register: zabbix_version
+
+- name: import mysql tables
+  shell: >
+    zcat /usr/share/doc/zabbix-server-mysql-{{ zabbix_version.stdout }}/create.sql.gz \
+    | mysql zabbix \
+    && touch /root/.zabbix.schema.imported
+    creates=/root/.zabbix.schema.imported
+
+- name: remove guest user
+  script: remove_zabbix_user.sh guest
+  register: result
+  changed_when: '"already removed" not in result.stdout'
+
+- name: put zabbix_server.conf
+  template: >
+    src=etc/zabbix/zabbix_server.conf.j2
+    dest=/etc/zabbix/zabbix_server.conf
+    owner=root
+    group=zabbix
+    mode=0640
+  notify: restart zabbix-server
+
+- name: put zabbix.conf.php
+  template: >
+    src=etc/zabbix/web/zabbix.conf.php.j2
+    dest=/etc/zabbix/web/zabbix.conf.php
+    owner=apache
+    group=apache
+
+- name: replace font
+  shell: >
+    readlink /etc/alternatives/zabbix-web-font | grep -qF ipagp.ttf \
+    || (unlink /etc/alternatives/zabbix-web-font \
+    && ln -sv /usr/share/fonts/ipa-pgothic/ipagp.ttf /etc/alternatives/zabbix-web-font)
+  register: result
+  changed_when: '"ipagp.ttf" in result.stdout'
+
+- name: put external scripts
+  copy: >
+    src={{ item }}
+    dest=/usr/lib/zabbix/externalscripts/
+    mode=0755
+  with_fileglob:
+    - usr/lib/zabbix/externalscripts/*
+
+- name: get zapache
+  get_url: >
+    url=https://raw.githubusercontent.com/lorf/zapache/master/zapache
+    dest=/usr/lib/zabbix/externalscripts/zapache.sh
+    mode=0755

@@ -1,0 +1,43 @@
+---
+- hosts: zabbix
+  become: True
+  roles:
+    - centos7-common
+    - mariadb
+    - zabbix
+
+- name: install system packages
+  hosts: web
+  become: true
+  tasks:
+    - yum: name={{ item }} state=present
+      with_items:
+        - libselinux-python
+        - policycoreutils-python
+        - python-enum34
+
+- name: Configure nginx
+  hosts: web
+  roles:
+    - sedovandrew.nginx
+    - role: dj-wasabi.zabbix-agent
+      zabbix_agent_server: 192.168.12.51
+      zabbix_agent_serveractive: 192.168.12.51
+      zabbix_url: http://192.168.12.51
+      zabbix_api_create_hosts: true
+      zabbix_api_create_hostgroup: true
+      zabbix_api_user: Admin
+      zabbix_api_pass: zabbix
+      zabbix_create_host: present
+      zabbix_host_groups:
+        - Linux servers
+      zabbix_link_templates:
+        - Template OS Linux
+        - Template App HTTP Service
+  tasks:
+    - name: Welcome site page
+      become: true
+      copy:
+        src: files/welcome_site_page.html
+        dest: "/usr/share/nginx/html/index.html"
+

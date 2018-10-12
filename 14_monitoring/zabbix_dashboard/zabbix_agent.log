@@ -1,0 +1,218 @@
+21027:20181008:140119.093 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+ 21027:20181008:140119.094 **** Enabled features ****
+ 21027:20181008:140119.094 IPv6 support:          YES
+ 21027:20181008:140119.094 TLS support:           YES
+ 21027:20181008:140119.094 **************************
+ 21027:20181008:140119.094 using configuration file: /etc/zabbix/zabbix_agentd.conf
+ 21027:20181008:140119.096 agent #0 started [main process]
+ 21030:20181008:140119.117 agent #3 started [listener #2]
+ 21031:20181008:140119.120 agent #4 started [listener #3]
+ 21028:20181008:140119.123 agent #1 started [collector]
+ 21032:20181008:140119.123 agent #5 started [active checks #1]
+ 21029:20181008:140119.129 agent #2 started [listener #1]
+ 21032:20181008:140119.202 no active checks on server [192.168.12.51:10051]: host [web] not found
+ 21027:20181008:140125.716 Got signal [signal:15(SIGTERM),sender_pid:21302,sender_uid:0,reason:0]. Exiting ...
+ 21027:20181008:140125.723 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+ 21306:20181008:140125.743 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+ 21306:20181008:140125.743 **** Enabled features ****
+ 21306:20181008:140125.743 IPv6 support:          YES
+ 21306:20181008:140125.743 TLS support:           YES
+ 21306:20181008:140125.743 **************************
+ 21306:20181008:140125.743 using configuration file: /etc/zabbix/zabbix_agentd.conf
+ 21306:20181008:140125.744 agent #0 started [main process]
+ 21309:20181008:140125.765 agent #3 started [listener #2]
+ 21310:20181008:140125.768 agent #4 started [listener #3]
+ 21307:20181008:140125.770 agent #1 started [collector]
+ 21311:20181008:140125.770 agent #5 started [active checks #1]
+ 21308:20181008:140125.774 agent #2 started [listener #1]
+zabbix_agentd [25019]: Is this process already running? Could not lock PID file [/var/run/zabbix/zabbix_agentd.pid]: [11] Resource temporarily unavailable
+ 21306:20181008:142152.033 Got signal [signal:15(SIGTERM),sender_pid:25039,sender_uid:0,reason:0]. Exiting ...
+ 21306:20181008:142152.039 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+ 25043:20181008:142152.066 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+ 25043:20181008:142152.066 **** Enabled features ****
+ 25043:20181008:142152.066 IPv6 support:          YES
+ 25043:20181008:142152.066 TLS support:           YES
+ 25043:20181008:142152.067 **************************
+ 25043:20181008:142152.067 using configuration file: /etc/zabbix/zabbix_agentd.conf
+ 25043:20181008:142152.068 agent #0 started [main process]
+ 25044:20181008:142152.092 agent #1 started [collector]
+ 25045:20181008:142152.092 agent #2 started [listener #1]
+ 25046:20181008:142152.095 agent #3 started [listener #2]
+ 25048:20181008:142152.098 agent #5 started [active checks #1]
+ 25047:20181008:142152.102 agent #4 started [listener #3]
+   916:20181010:195318.775 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+   916:20181010:195318.779 **** Enabled features ****
+   916:20181010:195318.779 IPv6 support:          YES
+   916:20181010:195318.779 TLS support:           YES
+   916:20181010:195318.779 **************************
+   916:20181010:195318.779 using configuration file: /etc/zabbix/zabbix_agentd.conf
+   916:20181010:195318.799 agent #0 started [main process]
+   922:20181010:195318.822 agent #3 started [listener #2]
+   923:20181010:195318.825 agent #4 started [listener #3]
+   920:20181010:195318.828 agent #1 started [collector]
+   921:20181010:195318.864 agent #2 started [listener #1]
+   924:20181010:195318.864 agent #5 started [active checks #1]
+   924:20181010:195323.371 active check configuration update from [192.168.12.51:10051] started to fail (cannot connect to [[192.168.12.51]:10051]: [4] Interrupted system call)
+   924:20181010:200247.414 active check configuration update from [192.168.12.51:10051] is working again
+   916:20181010:200643.620 Got signal [signal:15(SIGTERM),sender_pid:3446,sender_uid:0,reason:0]. Exiting ...
+   916:20181010:200643.635 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3450:20181010:200643.666 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3450:20181010:200643.666 **** Enabled features ****
+  3450:20181010:200643.666 IPv6 support:          YES
+  3450:20181010:200643.666 TLS support:           YES
+  3450:20181010:200643.666 **************************
+  3450:20181010:200643.666 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3450:20181010:200643.668 agent #0 started [main process]
+  3455:20181010:200643.689 agent #5 started [active checks #1]
+  3451:20181010:200643.694 agent #1 started [collector]
+  3452:20181010:200643.694 agent #2 started [listener #1]
+  3453:20181010:200643.697 agent #3 started [listener #2]
+  3454:20181010:200643.700 agent #4 started [listener #3]
+  3450:20181010:201108.769 Got signal [signal:15(SIGTERM),sender_pid:3478,sender_uid:0,reason:0]. Exiting ...
+  3450:20181010:201108.773 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3482:20181010:201108.795 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3482:20181010:201108.795 **** Enabled features ****
+  3482:20181010:201108.795 IPv6 support:          YES
+  3482:20181010:201108.795 TLS support:           YES
+  3482:20181010:201108.796 **************************
+  3482:20181010:201108.796 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3482:20181010:201108.797 agent #0 started [main process]
+  3486:20181010:201108.816 agent #4 started [listener #3]
+  3487:20181010:201108.819 agent #5 started [active checks #1]
+  3483:20181010:201108.822 agent #1 started [collector]
+  3484:20181010:201108.824 agent #2 started [listener #1]
+  3485:20181010:201108.826 agent #3 started [listener #2]
+  3485:20181010:201155.687 failed to accept an incoming connection: connection from "127.0.0.1" rejected, allowed hosts: "192.168.12.51"
+  3482:20181010:202056.161 Got signal [signal:15(SIGTERM),sender_pid:3508,sender_uid:0,reason:0]. Exiting ...
+  3482:20181010:202056.170 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3512:20181010:202056.189 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3512:20181010:202056.189 **** Enabled features ****
+  3512:20181010:202056.189 IPv6 support:          YES
+  3512:20181010:202056.189 TLS support:           YES
+  3512:20181010:202056.189 **************************
+  3512:20181010:202056.189 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3512:20181010:202056.190 agent #0 started [main process]
+  3515:20181010:202056.209 agent #3 started [listener #2]
+  3516:20181010:202056.211 agent #4 started [listener #3]
+  3513:20181010:202056.217 agent #1 started [collector]
+  3517:20181010:202056.217 agent #5 started [active checks #1]
+  3514:20181010:202056.220 agent #2 started [listener #1]
+  3512:20181010:202344.071 Got signal [signal:15(SIGTERM),sender_pid:3574,sender_uid:0,reason:0]. Exiting ...
+  3512:20181010:202344.086 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3578:20181010:202344.130 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3578:20181010:202344.131 **** Enabled features ****
+  3578:20181010:202344.131 IPv6 support:          YES
+  3578:20181010:202344.131 TLS support:           YES
+  3578:20181010:202344.131 **************************
+  3578:20181010:202344.131 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3578:20181010:202344.133 agent #0 started [main process]
+  3580:20181010:202344.151 agent #2 started [listener #1]
+  3581:20181010:202344.161 agent #3 started [listener #2]
+  3582:20181010:202344.167 agent #4 started [listener #3]
+  3583:20181010:202344.170 agent #5 started [active checks #1]
+  3579:20181010:202344.174 agent #1 started [collector]
+  3578:20181010:202617.512 Got signal [signal:15(SIGTERM),sender_pid:3591,sender_uid:0,reason:0]. Exiting ...
+  3578:20181010:202617.519 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3595:20181010:202617.547 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3595:20181010:202617.547 **** Enabled features ****
+  3595:20181010:202617.547 IPv6 support:          YES
+  3595:20181010:202617.547 TLS support:           YES
+  3595:20181010:202617.547 **************************
+  3595:20181010:202617.547 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3595:20181010:202617.549 agent #0 started [main process]
+  3598:20181010:202617.569 agent #3 started [listener #2]
+  3599:20181010:202617.574 agent #4 started [listener #3]
+  3596:20181010:202617.579 agent #1 started [collector]
+  3600:20181010:202617.581 agent #5 started [active checks #1]
+  3597:20181010:202617.587 agent #2 started [listener #1]
+  3595:20181010:202929.994 Got signal [signal:15(SIGTERM),sender_pid:3608,sender_uid:0,reason:0]. Exiting ...
+  3595:20181010:202929.999 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3612:20181010:202930.018 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3612:20181010:202930.018 **** Enabled features ****
+  3612:20181010:202930.018 IPv6 support:          YES
+  3612:20181010:202930.018 TLS support:           YES
+  3612:20181010:202930.019 **************************
+  3612:20181010:202930.019 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3612:20181010:202930.019 agent #0 started [main process]
+  3616:20181010:202930.032 agent #4 started [listener #3]
+  3617:20181010:202930.041 agent #5 started [active checks #1]
+  3613:20181010:202930.044 agent #1 started [collector]
+  3614:20181010:202930.045 agent #2 started [listener #1]
+  3615:20181010:202930.047 agent #3 started [listener #2]
+  3617:20181010:202930.049 active check configuration update from [127.0.0.1:10051] started to fail (cannot connect to [[127.0.0.1]:10051]: [111] Connection refused)
+  3612:20181010:202942.780 Got signal [signal:15(SIGTERM),sender_pid:3626,sender_uid:0,reason:0]. Exiting ...
+  3612:20181010:202942.788 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3630:20181010:202942.809 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3630:20181010:202942.809 **** Enabled features ****
+  3630:20181010:202942.809 IPv6 support:          YES
+  3630:20181010:202942.809 TLS support:           YES
+  3630:20181010:202942.809 **************************
+  3630:20181010:202942.809 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3630:20181010:202942.810 agent #0 started [main process]
+  3632:20181010:202942.834 agent #2 started [listener #1]
+  3633:20181010:202942.837 agent #3 started [listener #2]
+  3634:20181010:202942.842 agent #4 started [listener #3]
+  3635:20181010:202942.847 agent #5 started [active checks #1]
+  3631:20181010:202942.853 agent #1 started [collector]
+  3635:20181010:202942.854 active check configuration update from [127.0.0.1:10051] started to fail (cannot connect to [[127.0.0.1]:10051]: [111] Connection refused)
+  3630:20181010:203108.132 Got signal [signal:15(SIGTERM),sender_pid:3643,sender_uid:0,reason:0]. Exiting ...
+  3630:20181010:203108.139 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3647:20181010:203108.165 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3647:20181010:203108.165 **** Enabled features ****
+  3647:20181010:203108.165 IPv6 support:          YES
+  3647:20181010:203108.165 TLS support:           YES
+  3647:20181010:203108.165 **************************
+  3647:20181010:203108.165 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3647:20181010:203108.167 agent #0 started [main process]
+  3650:20181010:203108.181 agent #3 started [listener #2]
+  3651:20181010:203108.186 agent #4 started [listener #3]
+  3648:20181010:203108.192 agent #1 started [collector]
+  3652:20181010:203108.195 agent #5 started [active checks #1]
+  3649:20181010:203108.206 agent #2 started [listener #1]
+  3647:20181010:203456.604 Got signal [signal:15(SIGTERM),sender_pid:3788,sender_uid:0,reason:0]. Exiting ...
+  3647:20181010:203456.615 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  3792:20181010:203456.772 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  3792:20181010:203456.773 **** Enabled features ****
+  3792:20181010:203456.773 IPv6 support:          YES
+  3792:20181010:203456.773 TLS support:           YES
+  3792:20181010:203456.773 **************************
+  3792:20181010:203456.773 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  3792:20181010:203456.775 agent #0 started [main process]
+  3795:20181010:203456.790 agent #3 started [listener #2]
+  3796:20181010:203456.799 agent #4 started [listener #3]
+  3793:20181010:203456.802 agent #1 started [collector]
+  3797:20181010:203456.803 agent #5 started [active checks #1]
+  3794:20181010:203456.809 agent #2 started [listener #1]
+  3792:20181010:204305.763 Got signal [signal:15(SIGTERM),sender_pid:4316,sender_uid:0,reason:0]. Exiting ...
+  3793:20181010:204305.767 Got signal [signal:15(SIGTERM),sender_pid:1,sender_uid:0,reason:0]. Exiting ...
+  3794:20181010:204305.768 Got signal [signal:15(SIGTERM),sender_pid:1,sender_uid:0,reason:0]. Exiting ...
+  3795:20181010:204305.769 Got signal [signal:15(SIGTERM),sender_pid:1,sender_uid:0,reason:0]. Exiting ...
+  3796:20181010:204305.769 Got signal [signal:15(SIGTERM),sender_pid:1,sender_uid:0,reason:0]. Exiting ...
+  3797:20181010:204305.770 Got signal [signal:15(SIGTERM),sender_pid:1,sender_uid:0,reason:0]. Exiting ...
+  3792:20181010:204305.772 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  4320:20181010:204305.811 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  4320:20181010:204305.811 **** Enabled features ****
+  4320:20181010:204305.811 IPv6 support:          YES
+  4320:20181010:204305.811 TLS support:           YES
+  4320:20181010:204305.811 **************************
+  4320:20181010:204305.811 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  4320:20181010:204305.813 agent #0 started [main process]
+  4322:20181010:204305.826 agent #2 started [listener #1]
+  4323:20181010:204305.833 agent #3 started [listener #2]
+  4324:20181010:204305.842 agent #4 started [listener #3]
+  4325:20181010:204305.846 agent #5 started [active checks #1]
+  4321:20181010:204305.851 agent #1 started [collector]
+  4320:20181010:204623.684 Got signal [signal:15(SIGTERM),sender_pid:4668,sender_uid:0,reason:0]. Exiting ...
+  4320:20181010:204623.730 Zabbix Agent stopped. Zabbix 3.4.14 (revision 84877).
+  4673:20181010:204623.909 Starting Zabbix Agent [web]. Zabbix 3.4.14 (revision 84877).
+  4673:20181010:204623.909 **** Enabled features ****
+  4673:20181010:204623.909 IPv6 support:          YES
+  4673:20181010:204623.909 TLS support:           YES
+  4673:20181010:204623.909 **************************
+  4673:20181010:204623.909 using configuration file: /etc/zabbix/zabbix_agentd.conf
+  4673:20181010:204623.911 agent #0 started [main process]
+  4676:20181010:204623.948 agent #3 started [listener #2]
+  4677:20181010:204623.958 agent #4 started [listener #3]
+  4674:20181010:204623.963 agent #1 started [collector]
+  4678:20181010:204623.965 agent #5 started [active checks #1]
+  4675:20181010:204623.971 agent #2 started [listener #1]

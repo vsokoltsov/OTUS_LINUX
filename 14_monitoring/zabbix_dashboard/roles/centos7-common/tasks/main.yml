@@ -1,0 +1,25 @@
+---
+- name: check os version
+  fail: msg='OS is NOT CentOS 7.x'
+  when: ansible_distribution != 'CentOS' or ansible_distribution_major_version != '7'
+
+- name: install packages
+  yum: name={{ item }}
+  with_items:
+    - libselinux-python
+
+- name: disable SELinux (Sorry, Ishikawa-san)
+  shell: getenforce | grep -q Disabled || (setenforce 0 && echo changed)
+  register: result
+  changed_when: '"changed" in result.stdout'
+
+- name: disable SELinux
+  lineinfile: >
+    dest=/etc/selinux/config
+    regexp=^SELINUX=
+    line=SELINUX=disabled
+
+- name: install remi repository
+  yum: name={{ item }}
+  with_items:
+    - http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
