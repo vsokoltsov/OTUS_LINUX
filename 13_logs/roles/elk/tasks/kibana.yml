@@ -1,0 +1,48 @@
+---
+- name: Copy kibana.repo file
+  copy:
+    src: "{{ role_path }}/files/kibana.repo"
+    dest: /etc/yum.repos.d/kibana.repo
+
+- name: Install kibana
+  yum:
+    name: kibana
+    state: latest
+
+- name: Start kibana
+  service:
+    name: kibana
+    state: started
+
+- name: Install dependencies
+  yum: name="{{ item }}" state=latest update_cache=yes
+  with_items:
+    - 'nginx'
+    - 'python-passlib'
+    - 'libsemanage-python'
+
+- name: 'Enable nginx'
+  shell: systemctl enable nginx
+
+- name: Create kibana admin credentials
+  htpasswd:
+    path: /etc/nginx/htpasswd.users
+    name: "{{ kibana_user }}"
+    password: "{{ kibana_passwd }}"
+    crypt_scheme: md5_crypt
+
+- name: 'Copy kibana nginx {{ nginx_conf_name }} config'
+  template:
+    src: "templates/{{ nginx_conf_name }}.j2"
+    dest: "{{ nginx_config_path }}/conf.d/{{ nginx_conf_name }}.conf"
+    force: yes
+  notify:
+    - restart nginx
+
+- name: Set httpd_can_network_connect flag on
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+  notify:
+    - restart nginx

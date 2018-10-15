@@ -5,3 +5,5 @@ java_version_path: jdk1.8.0_131
 java_version_path_short: jdk-8u131
 java_name: "{{download_folder}}/{{java_version_path}}"
 java_archive: "{{download_folder}}/{{java_version_path_short}}-linux-x64.tar.gz"
+nginx_conf_name: kibana
+nginx_config_path: /etc/nginx

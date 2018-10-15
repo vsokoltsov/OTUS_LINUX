@@ -29,11 +29,11 @@ Vagrant.configure("2") do |config|
 
           box.vm.network "private_network", ip: boxconfig[:ip_addr]
 
-          if boxname == :elk
+          if boxname.to_s == 'elk'
             config.vm.network "forwarded_port", host: 9200, guest: 9200 # Elasticsearch
             config.vm.network "forwarded_port", host: 9300, guest: 9300 # Logtash
             config.vm.network "forwarded_port", host: 5601, guest: 5601 # Kibana
-          elsif boxname == :web
+          elsif boxname.to_s == 'web'
             config.vm.network "forwarded_port", host: 8800, guest: 80 # Elasticsearch
           end
 

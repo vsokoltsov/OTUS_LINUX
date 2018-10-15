@@ -1,3 +1,5 @@
 ---
 log_ip: 192.168.12.51
 elk_ip: 192.168.12.52
+kibana_user: admin
+kibana_passwd: admin

@@ -1,0 +1,15 @@
+---
+- name: Copy elasticsearch.repo file
+  copy:
+    src: "{{ role_path }}/files/elasticsearch.repo"
+    dest: /etc/yum.repos.d/elasticsearch.repo
+
+- name: Install elasticsearch
+  yum:
+    name: elasticsearch
+    state: latest
+
+- name: Start elasticsearch
+  service:
+    name: elasticsearch
+    state: started

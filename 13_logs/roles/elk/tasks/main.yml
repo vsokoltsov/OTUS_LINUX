@@ -1,3 +1,6 @@
 ---
 - include_tasks: roles/base_install.yml
 - include_tasks: java.yml
+- include_tasks: elasticsearch.yml
+- include_tasks: kibana.yml
+- include_tasks: logstash.yml

@@ -1,0 +1,10 @@
+---
+- name: Copy logstash.repo file
+  copy:
+    src: "{{ role_path }}/files/logstash.repo"
+    dest: /etc/yum.repos.d/logstash.repo
+
+- name: Install logstash
+  yum:
+    name: logstash
+    state: latest
