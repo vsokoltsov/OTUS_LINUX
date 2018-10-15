@@ -39,3 +39,19 @@
     force: yes
   notify:
     - restart nginx
+
+- name: Install filebeat
+  yum:
+    name: https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.4.2-x86_64.rpm
+    state: latest
+
+- name: 'Copy filebeat config'
+  template:
+    src: templates/filebeat.j2
+    dest: /etc/filebeat/filebeat.yml
+    force: yes
+
+- name: Restart filebeat
+  service:
+    name: filebeat
+    state: restarted

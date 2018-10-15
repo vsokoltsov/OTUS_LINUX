@@ -1,0 +1,6 @@
+server {
+  listen 5400;
+
+  location / {
+   proxy_pass http://localhost:9300;
+  }

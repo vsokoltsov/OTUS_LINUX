@@ -6,5 +6,23 @@
 
 - name: Install logstash
   yum:
+    name: https://artifacts.elastic.co/downloads/logstash/logstash-6.2.4.rpm
+    state: present
+
+- name: 'Copy logstash nginx config'
+  template:
+    src: "templates/logstash.j2"
+    dest: "{{ nginx_config_path }}/conf.d/logstash.conf"
+    force: yes
+  notify:
+    - restart nginx
+
+- name: Copy logstash read pattern
+  copy:
+    src: "{{ role_path }}/files/logstash-nginx.conf"
+    dest: /etc/logstash/conf.d/logstash-nginx.conf
+
+- name: Restart logstash
+  service:
     name: logstash
-    state: latest
+    state: restarted
