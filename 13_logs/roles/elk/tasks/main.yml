@@ -1,0 +1,3 @@
+---
+- include_tasks: roles/base_install.yml
+- include_tasks: java.yml

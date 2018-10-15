@@ -11,3 +11,10 @@
   gather_facts: no
   roles:
     - web
+
+- name: Configure elk
+  hosts: elk
+  become: True
+  gather_facts: no
+  roles:
+    - elk
