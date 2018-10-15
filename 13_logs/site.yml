@@ -1,0 +1,13 @@
+---
+- name: Configure log
+  hosts: log
+  become: True
+  roles:
+    - log
+
+- name: Configure web
+  hosts: web
+  become: True
+  gather_facts: no
+  roles:
+    - web

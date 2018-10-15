@@ -1,0 +1,24 @@
+---
+- name: 'Add 514/tcp port to firewall'
+  firewalld:
+    port: 514/tcp
+    permanent: true
+    state: enabled
+
+- name: 'Add 514/udp port to firewall'
+  firewalld:
+    port: 514/udp
+    permanent: true
+    state: enabled
+
+- name: Restart firewalld
+  service:
+    name: firewalld
+    state: restarted
+
+- name: Copy rsyslog.conf to remote host
+  copy:
+    src: "{{ role_path }}/files/rsyslog.conf"
+    dest: /etc/rsyslog.conf
+  notify:
+    - restart rsyslog
