@@ -1,14 +1,13 @@
 #!/bin/bash
 
 CURRENT_WEEK_DAY=$(date +%u)
-GROUP=$(id -g "$PAM_USER")
+GROUP=$(id -g -n "$PAM_USER")
 DATES=('2018-01-01' '2018-02-23' '2018-03-08')
 
 containDates() {
   currentDate=$(date +%Y-%m-%d)
   dates=$1
   for i in "${dates[@]}" ; do
-    echo $currentDate, $i
     if [ "$currentDate" == "$i" ]; then
        return 1
     fi
@@ -16,14 +15,20 @@ containDates() {
   return 0
 }
 
-if ( [ "$CURRENT_WEEK_DAY" == 6 ] || [ "$CURRENT_WEEK_DAY" == 7 ] ) && containDates $DATES
+if [ "$PAM_USER" == 'root' ]
+then
+    echo "root successfully logged in"
+    exit 0
+fi
+
+if ( [ "$CURRENT_WEEK_DAY" == 5 ] || [ "$CURRENT_WEEK_DAY" == 6 ] ) || containDates $DATES
 then
   if [ $GROUP == 'admin' ]
   then
-    echo "success logged in" >> /bin/script.log
+    echo "success logged in"
     exit 0
   else
-    echo "User's $PAM_USER primary group is not 'admin'" >> /bin/script.log
+    echo "User's $PAM_USER primary group is not 'admin'"
     exit 1
   fi
 fi
