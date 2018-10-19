@@ -1,4 +1,4 @@
-yum install -y epel-release pam_script
+sudo yum install -y epel-release pam_script
 
 # Task 1
 sudo echo "session     required     pam_script.so runas=root onsessionopen=/bin/script.sh" >> /etc/pam.d/su
