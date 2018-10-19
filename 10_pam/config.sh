@@ -1,6 +1,8 @@
+yum install -y epel-release pam_script
+
 # Task 1
 sudo echo "session     required     pam_script.so runas=root onsessionopen=/bin/script.sh" >> /etc/pam.d/su
-cp ./script.sh /bin/script.sh
+cp ./pam_lab/script.sh /bin/script.sh
 
 # Task 2
 echo "cap_sys_admin vagrant" >> /etc/security/capability.conf
