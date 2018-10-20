@@ -16,7 +16,7 @@ echo "admin" | passwd admin --stdin
 # Task 1
 echo "TASK 1"
 sudo echo "session     required     pam_script.so dir=$SCRIPT_DIR" >> /etc/pam.d/su
-sudo echo "session     required     pam_script.so dir=$SCRIPT_DIR" >> /etc/pam.d/sshd
+# sudo echo "session     required     pam_script.so dir=$SCRIPT_DIR" >> /etc/pam.d/sshd
 
 # Task 2
 echo "TASK 2"
