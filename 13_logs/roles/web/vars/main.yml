@@ -1,3 +1,3 @@
 ---
-nginx_conf_name: kibana
+nginx_conf_name: rsyslog
 nginx_config_path: /etc/nginx
