@@ -20,6 +20,9 @@
     - 'nginx'
     - 'python-passlib'
     - 'libsemanage-python'
+    - 'policycoreutils-python'
+    - 'net-tools'
+    - 'psmisc'
 
 - name: 'Enable nginx'
   shell: systemctl enable nginx
@@ -30,6 +33,19 @@
     name: "{{ kibana_user }}"
     password: "{{ kibana_passwd }}"
     crypt_scheme: md5_crypt
+
+- name: 'Kibaba: allow 5601 for selinux'
+  seport:
+      ports: 5601
+      proto: tcp
+      setype: http_port_t
+      state: present
+
+- name: 'Kibana: add 80/tcp port to firewall'
+  firewalld:
+    port: 80/tcp
+    permanent: true
+    state: enabled
 
 - name: 'Copy kibana nginx {{ nginx_conf_name }} config'
   template:

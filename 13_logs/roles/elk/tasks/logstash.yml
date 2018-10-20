@@ -1,28 +1,27 @@
 ---
-- name: Copy logstash.repo file
+- name: 'Logstash: Copy logstash.repo file'
   copy:
     src: "{{ role_path }}/files/logstash.repo"
     dest: /etc/yum.repos.d/logstash.repo
 
-- name: Install logstash
+- name: 'Logstash: Install logstash'
   yum:
     name: https://artifacts.elastic.co/downloads/logstash/logstash-6.2.4.rpm
     state: present
 
-- name: 'Copy logstash nginx config'
-  template:
-    src: "templates/logstash.j2"
-    dest: "{{ nginx_config_path }}/conf.d/logstash.conf"
-    force: yes
-  notify:
-    - restart nginx
+- name: 'Logstash: allow 5400 for selinux'
+  seport:
+      ports: 5400
+      proto: tcp
+      setype: http_port_t
+      state: present
 
-- name: Copy logstash read pattern
+- name: 'Logstash: Copy logstash read pattern'
   copy:
     src: "{{ role_path }}/files/logstash-nginx.conf"
     dest: /etc/logstash/conf.d/logstash-nginx.conf
 
-- name: Restart logstash
+- name: 'Logstash: Restart logstash'
   service:
     name: logstash
     state: restarted
