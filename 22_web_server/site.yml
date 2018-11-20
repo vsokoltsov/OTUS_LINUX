@@ -1,0 +1,90 @@
+---
+- hosts: all
+  become: yes
+
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+    - name: Install epel-release package
+      yum:
+        name: epel-release
+        state: latest
+        update_cache: yes
+
+    - name: check for updates (yum)
+      yum: list=updates update_cache=true
+
+    - name: Setup nginx and selinux packages
+      yum: name="{{ item }}" state=latest update_cache=yes
+      with_items:
+        - nginx
+        - policycoreutils-python
+        - setools-console
+
+    - name: Add http service
+      firewalld:
+        service: http
+        permanent: true
+        state: enabled
+
+    - name: Add https service
+      firewalld:
+        service: https
+        permanent: true
+        state: enabled
+
+    - name: Restart firewalld
+      service:
+        name: firewalld
+        state: restarted
+
+    - name: Enable nginx
+      shell: systemctl enable nginx
+
+    - name: Create base server directory
+      file:
+        path: /var/www
+        state: directory
+        owner: root
+        group: root
+        mode: 0775
+
+    - name: Create directories for the locations
+      file:
+        path: /var/www/{{ item }}
+        state: directory
+        owner: nginx
+        group: nginx
+        mode: 0775
+      with_items:
+        - result_path
+        - set_cookie
+
+    - name: Create index.html file for the result location
+      file:
+        path: /var/www/result_path/index.html
+        state: touch
+        owner: nginx
+        group: nginx
+        mode: 0775
+
+    - name: Set sebool http_can_network_connect flag
+      seboolean:
+        name: httpd_can_network_connect
+        state: yes
+        persistent: yes
+
+    - name: Change secontext for the server folder
+      shell: chcon -Rt httpd_sys_content_t /var/www/
+
+    - name: 'Copy web server config'
+      copy:
+        src: web_server.conf
+        dest: "/etc/nginx/default.d/web_server.conf"
+        force: yes
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
