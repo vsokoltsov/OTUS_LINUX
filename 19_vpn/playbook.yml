@@ -1,0 +1,202 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+    - name: 'Install epel-release'
+      yum: name=epel-release state=latest
+
+- hosts: server
+  become: true
+  become_user: root
+  gather_facts: no
+  tasks:
+    - name: Start firewalld service
+      systemd:
+        state: started
+        name: firewalld
+
+    - name: Add port to the firewall
+      firewalld:
+        port: 1194/udp
+        permanent: true
+        state: enabled
+
+    - name: Install packages
+      yum: name={{ item }} state=latest
+      with_items:
+        - openvpn
+        - wget
+        - unzip
+        - zip
+        - policycoreutils-python
+
+    - name: Create directory for keys
+      file:
+        path: /etc/openvpn/keys
+        state: directory
+        mode: 0777
+
+    - name: Load Easy-RSA
+      get_url:
+        url: https://github.com/OpenVPN/easy-rsa/archive/master.zip
+        dest: /etc/openvpn/keys/master.zip
+        mode: 0777
+
+    - name: Unarchive downloaded package
+      unarchive:
+        src: /etc/openvpn/keys/master.zip
+        dest: /etc/openvpn/keys
+        remote_src: yes
+
+    - name: Set correct permissions
+      file:
+        path: /etc/openvpn/keys
+        mode: 0777
+        recurse: yes
+
+    - name: Create public PKI keys structure
+      shell: /etc/openvpn/keys/easy-rsa-master/easyrsa3/easyrsa init-pki <<< "yes"
+
+    - name: Set correct permissions
+      file:
+        path: /home/vagrant/pki
+        mode: 0777
+        recurse: yes
+
+    - name: Create CA satisfied centre
+      shell: /etc/openvpn/keys/easy-rsa-master/easyrsa3/easyrsa build-ca nopass <<< "otus"
+
+    - name: Generate server certificates
+      shell: /etc/openvpn/keys/easy-rsa-master/easyrsa3/easyrsa gen-req server nopass <<< "server"
+
+    - name: Pass a request for receiving server certificates from CA
+      shell: /etc/openvpn/keys/easy-rsa-master/easyrsa3/easyrsa sign-req server server <<< "yes"
+
+    - name: Generate Diffy-Helman keys
+      shell: /etc/openvpn/keys/easy-rsa-master/easyrsa3/easyrsa gen-dh
+
+    - name: Generate client certificates
+      shell: /etc/openvpn/keys/easy-rsa-master/easyrsa3/easyrsa gen-req client nopass <<< "client"
+
+    - name: Pass a request for receiving client certificates from CA
+      shell: /etc/openvpn/keys/easy-rsa-master/easyrsa3/easyrsa sign-req client client <<< "yes"
+
+    - name: Copy generated files from pki folder
+      copy:
+        src: "/home/vagrant/pki/{{ item }}"
+        dest: "/etc/openvpn/{{ item }}"
+        remote_src: yes
+        mode: o=rwx
+      with_items:
+        - ca.crt
+        - dh.pem
+
+    - name: Copy generated files from pki/issued
+      copy:
+        src: "/home/vagrant/pki/issued/{{ item }}"
+        dest: "/etc/openvpn/{{ item }}"
+        remote_src: yes
+        mode: o=rwx
+      with_items:
+        - client.crt
+        - server.crt
+
+    - name: Copy generated files from pki/private
+      copy:
+        src: "/home/vagrant/pki/private/{{ item }}"
+        dest: "/etc/openvpn/{{ item }}"
+        remote_src: yes
+        mode: o=rwx
+      with_items:
+        - ca.key
+        - client.key
+        - server.key
+
+    - name: Copy server config file
+      copy:
+        src: server.conf
+        dest: /etc/openvpn/server.conf
+        mode: 0777
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /etc/openvpn/ccd
+        - /var/log/openvpn
+
+    - name: Copy client config
+      copy:
+        src: client
+        dest: /etc/openvpn/ccd/client
+
+    - name: Change context of the log file
+      sefcontext:
+        target: '/var/log/openvpn/openvpn-status.log'
+        setype: openvpn_etc_rw_t
+        state: present
+
+    - name: Start openvpn server
+      systemd:
+        state: started
+        name: openvpn@server
+        enabled: yes
+
+    - name: Fetch client keys from server to local machine
+      fetch:
+        src: "/etc/openvpn/{{ item }}"
+        dest: "server_keys/{{ item }}"
+        flat: yes
+      with_items:
+        - ca.crt
+        - client.crt
+        - client.key
+
+- hosts: client
+  become: true
+  become_user: root
+  gather_facts: no
+
+  tasks:
+
+    - name: Install packages
+      yum: name={{ item }} state=latest
+      with_items:
+        - openvpn
+        - wget
+        - unzip
+        - zip
+        - policycoreutils-python
+
+    - name: Create directories
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - /var/log/openvpn
+
+    - name: Copy client config file
+      copy:
+        src: client.conf
+        dest: /etc/openvpn/client.conf
+        mode: 0777
+
+    - name: Copy keys to the client server
+      copy:
+        src: "server_keys/{{ item }}"
+        dest: "/etc/openvpn/{{ item }}"
+        mode: 0777
+      with_items:
+        - ca.crt
+        - client.crt
+        - client.key
+
+    - name: Start openvpn client
+      systemd:
+        state: started
+        name: openvpn@client
+        enabled: yes
