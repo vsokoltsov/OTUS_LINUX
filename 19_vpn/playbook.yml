@@ -32,6 +32,8 @@
         - unzip
         - zip
         - policycoreutils-python
+        - ocserv
+        - pam_radius
 
     - name: Create directory for keys
       file:
@@ -146,6 +148,47 @@
         name: openvpn@server
         enabled: yes
 
+    - name: Copy config to the ocserv
+      copy:
+        src: ocserv.conf
+        dest: /etc/ocserv/ocserv.conf
+
+    - name: Copy config to the pam.d/ocserv
+      copy:
+        src: ocserv_pam.d
+        dest: /etc/pam.d/ocserv
+
+    - name: Copy config to the pam_radius
+      copy:
+        src: pam_radius.conf
+        dest: /etc/ocserv/pam_radius.conf
+
+    - name: Create raddb directory
+      file:
+        path: /etc/raddb
+        state: directory
+
+    - name: Copy config to the raddb folder
+      copy:
+        src: raddb_server
+        dest: /etc/raddb/server
+
+    - name: Run firewall commands
+      shell: |
+        firewall-cmd --permanent --zone=external --change-interface=eth0
+        firewall-cmd --permanent --zone=external --add-service=https
+        firewall-cmd --reload
+
+    - name: Create clients
+      shell: ocpasswd user1 -c /etc/ocserv/ocpasswd <<< "Test"
+
+    - name: Start ocserv service
+      systemd:
+        state: started
+        name: ocserv
+        enabled: yes
+
+
     - name: Fetch client keys from server to local machine
       fetch:
         src: "/etc/openvpn/{{ item }}"
@@ -160,7 +203,8 @@
   become: true
   become_user: root
   gather_facts: no
-
+  vars:
+    interface: tun
   tasks:
 
     - name: Install packages
@@ -181,9 +225,20 @@
 
     - name: Copy client config file
       copy:
-        src: client.conf
+        src: "client_{{ interface }}.conf"
         dest: /etc/openvpn/client.conf
         mode: 0777
+
+    - name: Copy necessary scripts for tap
+      copy:
+        src: "{{ item }}"
+        dest: "/etc/openvpn/{{ item }}"
+        mode: 0777
+      with_items:
+        - bridge-start
+        - bridge-stop
+      when:
+        - interface == 'tap'
 
     - name: Copy keys to the client server
       copy:
