@@ -1,0 +1,24 @@
+-bash-4.2$ psql -c "select application_name, state, sync_priority, sync_state from pg_stat_replication;"
+ application_name |   state   | sync_priority | sync_state
+------------------+-----------+---------------+------------
+ pgslave01        | streaming |             1 | sync
+(1 row)
+
+-bash-4.2$ psql -x -c "select * from pg_stat_replication;"
+-[ RECORD 1 ]----+------------------------------
+pid              | 26477
+usesysid         | 16385
+usename          | replica
+application_name | pgslave01
+client_addr      | 192.168.50.11
+client_hostname  |
+client_port      | 58002
+backend_start    | 2018-12-11 18:42:25.025057+00
+backend_xmin     |
+state            | streaming
+sent_location    | 0/B000140
+write_location   | 0/B000140
+flush_location   | 0/B000140
+replay_location  | 0/B000140
+sync_priority    | 1
+sync_state       | sync

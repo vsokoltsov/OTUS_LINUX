@@ -1,0 +1,234 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+    - name: 'Install epel-release'
+      yum: name=epel-release state=latest
+
+    - name: Install postgres repository
+      yum: name=https://yum.postgresql.org/9.6/redhat/rhel-7-x86_64/pgdg-centos96-9.6-3.noarch.rpm state=latest
+
+- hosts:
+    - master
+    - slave
+  sudo: yes
+  tasks:
+    - name: Install dependencies
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - postgresql96-server
+        - postgresql96-contrib
+        - net-tools
+        - python-psycopg2
+
+    - name: Initialize database
+      shell: /usr/pgsql-9.6/bin/postgresql96-setup initdb
+
+    - name: Start firewalld service
+      systemd:
+        state: started
+        name: firewalld
+
+    - name: Start postgresql service
+      systemd:
+        state: started
+        name: postgresql-9.6
+
+    - name: Set postgres user password
+      become: true
+      become_user: postgres
+      postgresql_user:
+        name: postgres
+        password: "Test123"
+
+    - name: Add postgresql to firewall
+      firewalld:
+        service: postgresql
+        permanent: true
+        state: enabled
+
+    - name: Reload firewall
+      shell: firewall-cmd --reload
+
+- hosts: master
+  sudo: yes
+  tasks:
+    - name: Create .ssh directory
+      file:
+        path: /var/lib/pgsql/.ssh
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: 0700
+
+    - name: Create authorized_keys file
+      file:
+        path: /var/lib/pgsql/.ssh/authorized_keys
+        state: touch
+        owner: postgres
+        group: postgres
+        mode: 0600
+
+    - name: Copy private key
+      copy:
+        src: keys/postgres.private
+        dest: /var/lib/pgsql/.ssh/id_rsa
+        owner: postgres
+        group: postgres
+        mode: 0600
+
+    - name: Copy public key
+      copy:
+        src: keys/postgres.public
+        dest: /var/lib/pgsql/.ssh/id_rsa.pub
+        owner: postgres
+        group: postgres
+        mode: 0600
+
+    - name: Add postgres public key to the authorized_keys
+      become: true
+      become_user: postgres
+      lineinfile:
+        path: /var/lib/pgsql/.ssh/authorized_keys
+        line: "{{ lookup('file', 'keys/barman.public') }}"
+
+    - name: Copy postgres config
+      copy:
+        src: master_postgresql.conf
+        dest: /var/lib/pgsql/9.6/data/postgresql.conf
+
+    - name: Create archive directory
+      file:
+        path: /var/lib/pgsql/9.6/archive
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: 0700
+
+    - name: Copy pg_hba.conf config
+      copy:
+        src: pg_hba.conf
+        dest: /var/lib/pgsql/9.6/data/pg_hba.conf
+
+    - name: Set postgres user password
+      become: true
+      become_user: postgres
+      postgresql_user:
+        name: replica
+        password: "Test123"
+        role_attr_flags: LOGIN,REPLICATION
+
+    - name: Restart postgresql service
+      systemd:
+        state: restarted
+        name: postgresql-9.6
+
+    - name: Restore SELinux context for .ssh
+      shell: restorecon -Rv /var/lib/pgsql/.ssh
+
+- hosts: slave
+  sudo: yes
+  tasks:
+
+    - name: Stop postgresql service
+      systemd:
+        state: stopped
+        name: postgresql-9.6
+
+    - name: Rename data folder
+      shell: mv /var/lib/pgsql/9.6/data /var/lib/pgsql/9.6/data-backup
+
+    - name: Create data directory
+      file:
+        path: /var/lib/pgsql/9.6/data
+        state: directory
+        owner: postgres
+        group: postgres
+        mode: 0700
+
+    - name: Run backup action
+      become: true
+      become_user: postgres
+      shell: export PGPASSWORD="Test123" && /usr/pgsql-9.6/bin/pg_basebackup -h 192.168.50.10 -U replica -D /var/lib/pgsql/9.6/data -P --xlog
+
+    - name: Copy postgres config
+      copy:
+        src: slave_postgresql.conf
+        dest: /var/lib/pgsql/9.6/data/postgresql.conf
+
+    - name: Copy recovery.conf file
+      copy:
+        src: recovery.conf
+        dest: /var/lib/pgsql/9.6/data/recovery.conf
+        owner: postgres
+        group: postgres
+        mode: 0600
+
+    - name: Start postgresql service
+      systemd:
+        state: started
+        name: postgresql-9.6
+
+- hosts: barman
+  sudo: yes
+  tasks:
+    - name: Install dependencies
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - barman
+
+    - name: Create .ssh directory
+      file:
+        path: /var/lib/barman/.ssh
+        state: directory
+        owner: barman
+        group: barman
+        mode: 0700
+
+    - name: Create authorized_keys file
+      file:
+        path: /var/lib/barman/.ssh/authorized_keys
+        state: touch
+        owner: barman
+        group: barman
+        mode: 0600
+
+    - name: Copy private key
+      copy:
+        src: keys/barman.private
+        dest: /var/lib/barman/.ssh/id_rsa
+        owner: barman
+        group: barman
+        mode: 0600
+
+    - name: Copy public key
+      copy:
+        src: keys/barman.public
+        dest: /var/lib/barman/.ssh/id_rsa.pub
+        owner: barman
+        group: barman
+        mode: 0600
+
+    - name: Add postgres public key to the authorized_keys
+      become: true
+      become_user: barman
+      lineinfile:
+        path: /var/lib/barman/.ssh/authorized_keys
+        line: "{{ lookup('file', 'keys/postgres.public') }}"
+
+    - name: Copy barman config
+      copy:
+        src: barman.conf
+        dest: /etc/barman.conf
+
+    - name: Copy barman.d pg config
+      copy:
+        src: pg.conf
+        dest: /etc/barman.d/pg.conf
