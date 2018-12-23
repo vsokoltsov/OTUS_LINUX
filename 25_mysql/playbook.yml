@@ -1,0 +1,152 @@
+---
+- hosts: all
+  sudo: yes
+  tasks:
+    - name: install python 2
+      raw: test -e /usr/bin/python || (yum -y update && yum install -y python-minimal)
+
+    - name: Install percona server
+      yum:
+        name: http://www.percona.com/downloads/percona-release/redhat/0.1-6/percona-release-0.1-6.noarch.rpm
+        state: latest
+
+    - name: 'Install dependencies'
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - Percona-Server-server-57
+        - net-tools
+        - MySQL-python
+
+    - name: 'Start mysql service'
+      systemd:
+        state: started
+        name: mysqld
+
+    - name: Get temporary password
+      shell: grep 'temporary password' /var/log/mysqld.log | awk '{print $NF}'
+      register: temp_pass
+
+    - name: Detect and properly set root password
+      stat:
+        path: /root/.my.cnf
+      register: r
+    - mysql_user:
+        name: root
+        password: "{{ mysql_root_password }}"
+      when: r.stat.exists==True
+    - name: Update user root password
+      shell: mysql --connect-expired-password -uroot -p"{{ temp_pass.stdout }}" -e 'SET PASSWORD = PASSWORD("{{ mysql_root_password }}");'
+      when: r.stat.exists==False
+
+    - name: Copy my.conf to the /root folder
+      template:
+        src: my.conf.j2
+        dest: /root/.my.cnf
+        mode: 0600
+
+    - name: Copy configs to the server
+      template:
+        src: "conf/{{ item }}.j2"
+        dest: "/etc/my.cnf.d/{{ item }}"
+      with_items:
+        - 01-base.cnf
+        - 02-max-connections.cnf
+        - 03-performance.cnf
+        - 04-slow-query.cnf
+
+    - name: 'Restart mysql service'
+      systemd:
+        state: restarted
+        name: mysqld
+
+    - name: Start firewalld service
+      systemd:
+        state: started
+        name: firewalld
+
+    - name: Open database port
+      shell: |
+        firewall-cmd --zone=public --add-service=mysql --permanent
+        firewall-cmd --reload
+
+- hosts: master
+  sudo: yes
+  tasks:
+    - name: Copy binlog config
+      copy:
+        src: "conf/binlog_master.cnf"
+        dest: "/etc/my.cnf.d/binlog.cnf"
+
+    - name: Copy database dump to master server
+      copy:
+        src: bet.dmp
+        dest: /etc/bet.dmp
+
+    - name: "Create test database"
+      mysql_db:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        name: bet
+        state: present
+
+    - name: Restore database from dump
+      mysql_db:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        name: bet
+        state: import
+        target: /etc/bet.dmp
+
+    - name: Create replication user
+      mysql_user:
+        name: repl
+        password: "{{ repl_user_password }}"
+        priv: '*.*:REPLICATION SLAVE'
+        host: "%"
+        state: present
+
+    - name: 'Restart mysql service'
+      systemd:
+        state: restarted
+        name: mysqld
+
+    - name: Create dump for the further replication
+      shell: mysqldump --all-databases --triggers --routines --master-data --ignore-table=bet.events_on_demand --ignore-table=bet.v_same_event -uroot -p'{{ mysql_root_password }}' > /etc/master.sql
+
+    - name: Transfer file from master to host
+      fetch:
+        src: /etc/master.sql
+        dest: master_dump.sql
+        flat: yes
+
+
+- hosts: slave
+  sudo: yes
+  tasks:
+    - name: Copy binlog config
+      copy:
+        src: "conf/binlog_master.cnf"
+        dest: "/etc/my.cnf.d/binlog.cnf"
+
+    - name: Copy database master dump to slave server
+      copy:
+        src: master_dump.sql
+        dest: /etc/master.sql
+
+    - name: Create slave database
+      mysql_db:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        name: bet
+        state: import
+        target: /etc/master.sql
+
+    - name: 'Restart mysql service'
+      systemd:
+        state: restarted
+        name: mysqld
+
+    - name: Start replication
+      shell: mysql --connect-expired-password -uroot -p'{{ mysql_root_password }}' -e "CHANGE MASTER TO MASTER_HOST ='{{ master_ip }}', MASTER_PORT = 3306, MASTER_USER = 'repl', MASTER_PASSWORD = '{{ repl_user_password }}', MASTER_AUTO_POSITION = 1; START SLAVE;"
